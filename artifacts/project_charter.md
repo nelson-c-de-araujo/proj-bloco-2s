@@ -1,75 +1,69 @@
-# TP1 - Projeto de Bloco - Instituto Infnet - Aluno: Nelson C. de Araujo
-## Projeto da Agenda 2030 - ODS 13: Ação Contra a Mudança Global do Clima
+# Projeto_Bloco_EtapaTP2 - Instituto Infnet
+**Aluno: Nelson C. de Araujo**  
+**Projeto da Agenda 2030 - ODS 13: Ação Contra a Mudança Global do Clima**
 
-## 1. Definição do Problema de Negócio 
+---
 
-**Problema**: Muitas organizações não têm ferramentas prontas para acompanhar quantos gases emitem e impactam o planeta. Sem esses números, fica difícil planejar como reduzir as emissões.
+## 1. Definição do Problema de Negócio & Objetivos do TP2
 
-**Objetivo**: Criar um protótipo simples que mostre esses números de forma clara e dê uma ideia de como eles podem mudar no futuro, com base nos parâmetros do ODS 13 – *Ação Contra a Mudança Global do Clima*.
+**Problema:** Muitas organizações e gestores não dispõem de ferramentas dinâmicas e acessíveis para acompanhar suas emissões de gases de efeito estufa e monitorar as principais discussões climáticas globais.
 
-**Metas para o sucesso**
-- Um painel fácil de usar que mostre o total de emissões por período, comparativo, evolução e dados sazonais.
-- Feedback positivo de pelo menos 80% dos usuários que testarem a ferramenta.
+**Objetivo Geral:** Evoluir a solução desenvolvida no TP1, transformando o protótipo inicial em um painel interativo, de alta performance e resiliente, capaz de integrar dados de séries temporais de CO₂, matérias de veículos oficiais via Web Scraping e serviços de upload/download de dados de emissões.
 
-### **ODS utilizado no TP**: **ODS 13 – Ação Contra a Mudança Global do Clima** 
+**Metas para o Sucesso no TP2:**
+- Interface de usuário interativa e intuitiva construída em Streamlit com navegação por abas.
+- Módulo de extração independente via Web Scraping usando `BeautifulSoup` para monitoramento de notícias climáticas.
+- Processamento e geração de **Nuvem de Palavras (WordCloud)** a partir do compilado textual raspado.
+- Alta performance da aplicação utilizando decoradores de cache (`@st.cache_data`) e gerenciamento de estado (`st.session_state`).
+- Funcionalidade completa de **Upload** de arquivos CSV personalizados e **Download** de relatórios filtrados.
 
-**Justificativa:** Esse assunto disponibiliza dados e insights públicos que possibilitam a análise completa e estudos para a mitigação das emissões de gases, dados esses que permitam que o estudo e o projeto caminhem de maneira sólida.
+---
 
-**Público‑Alvo**
-- Empresas que precisam reportar emissões aos reguladores.
-- Gestores de sustentabilidade e equipes de ESG.
-- Órgãos públicos interessados em monitorar a emissão de carbono dos seus locais de atuação.
-- Curiosos sobre dados climáticos.
+## 2. Metodologia e Ciclo de Vida do Projeto (TDSP / CRISP-DM)
 
-## 2. Organização do Projeto (CRISP‑DM + TDSP)
+O projeto segue a estrutura do **Team Data Science Process (TDSP)**:
 
-- **(CRISP-DM + TDSP) Etapa: Business Understanding** - Aqui a gente compreende o problema de negócio a ser resolvido.
-- **(CRISP-DM + TDSP) Etapa: Data Understanding** - Aqui a gente entende o dado disponível e se ele é de fato "usável".
-- **(CRISP-DM + TDSP) Etapa: Data Preparation** - Aqui a gente gasta nossa energia pra preparar o dado (dá trabalho)
-- **(CRISP-DM + TDSP) Etapa: Modeling** - Aqui nós começamos a preparar os modelos.
-- **(CRISP-DM + TDSP) Etapa: Evaluation** - Aqui realizamos checks se as previsões funcionam o suficiente.
-- **(CRISP-DM + TDSP) Etapa: Deployment** - Aqui realizamos o lançamento da ferramenta.
-- **(TDSP) Etapa: Acceptance:** Aqui, dentro do TDSP, entendemos se a situação foi bem absorvida pelo cliente/stakeholder.
+1. **Business Understanding (`docs/BusinessUnderstanding/`):** Alinhamento dos objetivos com as metas do ODS 13 e mapeamento dos requisitos de usabilidade.
+2. **Data Understanding (`docs/DataUnderstanding/`):** Identificação das fontes de emissões (NOAA GML) e de dados não estruturados de notícias (Agência Brasil e ONU News).
+3. **Data Preparation (`docs/DataPreparation/`):** Desenvolvimento de scripts independentes para Web Scraping (`src/scrape_news.py`) e limpeza/tratamento de stopwords (`src/process_data.py`).
+4. **Modeling & Analytics (`docs/Modeling/`):** Agregação de métricas estatísticas e geração visual de nuvem de palavras.
+5. **Deployment (`docs/Deployment/`):** Publicação e otimização da aplicação web interativa em Streamlit (`code/app.py`).
+6. **Customer Acceptance (`docs/Acceptance/`):** Validação dos serviços de upload/download de arquivos CSV e facilidade de navegação com os stakeholders.
 
+---
 
-
-## 3. Estrutura de Diretórios Inicial
+## 3. Estrutura Atualizada do Repositório
 
 ```
-Projeto_Bloco_TP1/
-|-- data/                       # Dados do projeto (armazenamento de arquivos)
-|   |-- raw/                    # Dados brutos (ex: CSVs do NOAA)
-|   |-- processed/              # Dados limpos e preparados
+Projeto_Bloco_EtapaTP2/
+|-- data/                       # Armazenamento de dados
+|   |-- raw/                    # Dados brutos (noticias_ods13.csv e conteudo_ods13.txt)
+|   |-- processed/              # Dados limpos (noticias_ods13_limpo.csv e texto_nuvem_palavras.txt)
 |-- docs/                       # Documentação organizada pelas fases do TDSP
-|   |-- BusinessUnderstanding/  # Visão de negócio e charter
-|   |-- DataUnderstanding/      # Relatórios de dados e exploração
-|   |-- DataPreparation/        # Documentação de transformação de dados
-|   |-- Modeling/               # Relatórios de modelagem e experimentos
-|   |-- Deployment/             # Guias de implantação da aplicação
-|   |-- Acceptance/             # Critérios de aceite do cliente / feedback
-|-- models/                     # Arquivos de modelos treinados e serializados (.pkl, etc.)
-|-- src/                        # Módulos e scripts reutilizáveis de código
-|-- code/                       # Aplicação principal
-|   |-- app.py                  # Dashboard interativo Streamlit
-|-- artifacts/                  # Artefatos gerais do projeto
+|   |-- BusinessUnderstanding/
+|   |-- DataUnderstanding/
+|   |-- DataPreparation/
+|   |-- Modeling/
+|   |-- Deployment/
+|   |-- Acceptance/
+| |-- models/                     # Modelos e artefatos serializados
+|-- src/                        # Scripts independentes do pipeline de dados
+|   |-- scrape_news.py          # Script de Web Scraping (BeautifulSoup)
+|   |-- process_data.py         # Script de limpeza de texto e stopwords
+|-- code/                       # Aplicação principal Streamlit
+|   |-- app.py                  # Dashboard interativo com cache, sessão, upload/download
+|-- artifacts/                  # Artefatos da documentação do projeto
 |   |-- project_charter.md
 |   |-- data_summary_report.md
-|-- requirements.txt            # Dependências Python
+|-- requirements.txt            # Dependências Python (streamlit, pandas, bs4, wordcloud, etc.)
 |-- README.md                   # Visão geral do repositório
 ```
 
-## 4. Artefatos Iniciais
-
-- **Project Charter** (arquivo `artifacts/Project_Charter.md`): descreve escopo, stakeholders, cronograma e recursos.
-- **Data Summary Report** (arquivo `artifacts/Data_Summary_Report.md`): Lista as fontes de dados previstas e o objetivo de uso de cada conjunto.
-
-## 5. Aplicação Demo (Streamlit)
-
-A aplicação conterá:  
-- Título: "Monitor de Emissões – Projeto ODS 13"
-- Descrição do problema e objetivos.
-- Links úteis para bases de dados climáticas e referências de projetos de ESG.
-- Tabela interativa exibindo amostras dos dados de emissões.  
-  
-
 ---
+
+## 4. Principais Avanços Técnicos no TP2
+
+- **Navegação & Interatividade:** Estruturação por abas ("Indicadores de Emissão" e "Panorama de Notícias & Temas em Alta").
+- **Filtros Personalizados na Sidebar:** Filtro de período por mês (`multiselect`) e campo de pesquisa por palavra-chave para notícias com salvamento no `st.session_state`.
+- **Serviço de Dados Próprios:** Leitura de arquivos CSV locais do usuário com renderização automática da tabela e do gráfico de linhas abaixo da tabela.
+- **Resiliência:** Mecanismo de fallback para a raspagem de dados caso haja falha de conexão com os sites oficiais.
