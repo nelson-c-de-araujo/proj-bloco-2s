@@ -2,7 +2,7 @@
 
 Este repositório contém a segunda etapa de desenvolvimento (`Projeto_Bloco_EtapaTP2`) da aplicação de monitoramento e análise de emissões de CO₂ e panorama de notícias climáticas para apoiar decisões alinhadas ao **ODS 13 (Ação Contra a Mudança Global do Clima)**.
 
-## 📂 Estrutura do Repositório (Padrão TDSP)
+## Estrutura do Repositório (Padrão TDSP)
 
 A estrutura segue rigorosamente o padrão do **Team Data Science Process (TDSP)**:
 
@@ -23,7 +23,7 @@ A estrutura segue rigorosamente o padrão do **Team Data Science Process (TDSP)*
 - `code/`: Aplicação principal ([`app.py`](code/app.py)) com interface interativa, cache, sessão e serviços de upload/download de CSV.
 - `artifacts/`: Artefatos principais da documentação ([`project_charter.md`](artifacts/project_charter.md) e [`data_summary_report.md`](artifacts/data_summary_report.md)).
 
-## 🚀 Como Executar a Aplicação
+## Como Executar a Aplicação
 
 1. Instale as dependências:
    ```bash
