@@ -37,14 +37,25 @@
 
 ```
 Projeto_Bloco_TP1/
-|-- data/  # Dados brutos e processados
-|-- code/  # Código-fonte da aplicação
-|   |--app.py # Script principal
-|-- artifacts/  # Documentos do projeto (charter, reports, etc.)
-|   |-- Project_Charter.md # Possui o detalhamento do projeto e as respostas aos itens 1, 2 e 3.
-|   |-- Data_Summary_Report.md # Contém os dados disponibilizados no app
-|-- requirements.txt  # Dependências Python
-|-- README.md # Visão geral do projeto
+|-- data/                       # Dados do projeto (armazenamento de arquivos)
+|   |-- raw/                    # Dados brutos (ex: CSVs do NOAA)
+|   |-- processed/              # Dados limpos e preparados
+|-- docs/                       # Documentação organizada pelas fases do TDSP
+|   |-- BusinessUnderstanding/  # Visão de negócio e charter
+|   |-- DataUnderstanding/      # Relatórios de dados e exploração
+|   |-- DataPreparation/        # Documentação de transformação de dados
+|   |-- Modeling/               # Relatórios de modelagem e experimentos
+|   |-- Deployment/             # Guias de implantação da aplicação
+|   |-- Acceptance/             # Critérios de aceite do cliente / feedback
+|-- models/                     # Arquivos de modelos treinados e serializados (.pkl, etc.)
+|-- src/                        # Módulos e scripts reutilizáveis de código
+|-- code/                       # Aplicação principal
+|   |-- app.py                  # Dashboard interativo Streamlit
+|-- artifacts/                  # Artefatos gerais do projeto
+|   |-- project_charter.md
+|   |-- data_summary_report.md
+|-- requirements.txt            # Dependências Python
+|-- README.md                   # Visão geral do repositório
 ```
 
 ## 4. Artefatos Iniciais
