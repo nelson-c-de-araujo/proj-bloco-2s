@@ -2,7 +2,7 @@
 
 Este repositório contém o projeto de monitoramento e análise de emissões de CO₂ para apoiar decisões alinhadas ao **ODS 13 (Ação Contra a Mudança Global do Clima)**.
 
-## 📂 Estrutura do Repositório (Padrão TDSP)
+## Estrutura do Repositório (Padrão TDSP)
 
 A estrutura segue o padrão do **Team Data Science Process (TDSP)**:
 
@@ -19,7 +19,7 @@ A estrutura segue o padrão do **Team Data Science Process (TDSP)**:
 - `code/`: Aplicação principal ([`app.py`](code/app.py)).
 - `artifacts/`: Artefatos principais do projeto ([`project_charter.md`](artifacts/project_charter.md) e [`data_summary_report.md`](artifacts/data_summary_report.md)).
 
-## 🚀 Como Executar a Aplicação
+## Como Executar a Aplicação
 
 1. Instale as dependências:
    ```bash
