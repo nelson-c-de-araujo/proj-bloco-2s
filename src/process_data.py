@@ -56,5 +56,25 @@ def processar_dados():
             f.write(texto_trata)
         print(f"Texto tratado para Nuvem de Palavras salvo em: {txt_processed}")
 
+    # 3. Processar Emissões SEEG Brasil por Estados (Extraído via Selenium)
+    brasil_raw = "data/raw/seeg_brasil_estados.csv"
+    if os.path.exists(brasil_raw):
+        try:
+            df_br = pd.read_csv(brasil_raw)
+            # Converter colunas numéricas de strings com pontos para float
+            colunas_anos = [c for c in df_br.columns if c.isdigit()]
+            for c in colunas_anos:
+                df_br[c] = df_br[c].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
+                df_br[c] = pd.to_numeric(df_br[c], errors='coerce').fillna(0)
+            
+            brasil_processed = "data/processed/seeg_brasil_estados_limpo.csv"
+            df_br.to_csv(brasil_processed, index=False, encoding='utf-8-sig')
+            print(f"Dados SEEG Brasil por Estados processados salvos em: {brasil_processed}")
+        except Exception as e:
+            print(f"Erro ao processar dados SEEG Brasil: {e}")
+
 if __name__ == "__main__":
     processar_dados()
+
+
+
