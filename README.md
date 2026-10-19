@@ -53,6 +53,19 @@ Este repositório contém a terceira etapa de desenvolvimento (`Projeto_Bloco_Et
    streamlit run code/app.py
    ```
 
+4. (Opcional) Inicie a API FastAPI a partir da raiz do projeto:
+   ```bash
+   uvicorn src.api:app --reload
+   ```
+   Acesse `http://127.0.0.1:8000/docs` para ver a documentação interativa.
+
+   | Método | Rota | Função |
+   |--------|------|--------|
+   | GET | `/` | Verifica se a API está no ar. |
+   | GET | `/noticias?termo=calor&limite=20` | Consulta notícias, com filtro opcional por título ou fonte. |
+   | POST | `/noticias` | Envia uma nova notícia (JSON com `fonte`, `titulo` e `link`). Títulos repetidos retornam erro 409. |
+   | GET | `/emissoes?estado=Rio de Janeiro` | Consulta as emissões de 1990 a 2024 de um estado, ou de todos se o parâmetro for omitido. |
+
 
 
 
