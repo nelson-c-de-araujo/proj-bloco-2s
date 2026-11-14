@@ -28,6 +28,13 @@ Este repositório contém a quarta etapa de desenvolvimento (`Projeto_Bloco_Etap
 5. **Série Histórica Real de CO₂ (NOAA Mauna Loa)**:
    - Substituição dos dados de demonstração pela série histórica oficial de medições mensais e curvas de tendência dessazonalizada do **Observatório de Mauna Loa (NOAA Global Monitoring Laboratory)**.
 
+6. **Inteligência Artificial com Modelo LLM Local (Hugging Face)**:
+   - Módulo [`src/llm_engine.py`](src/llm_engine.py) com o modelo open-source **`Qwen/Qwen2.5-0.5B-Instruct`** executado **100% no ambiente local**, sem dependência de chaves de nuvem ou custos de API externa.
+   - Endpoint **`POST /processar_texto`** com Response Models Pydantic estruturados, validando tempo de inferência, texto gerado e metadados.
+   - Suporte a 3 tarefas: Resumo Executivo (`resumo`), Classificação de Tom e Impacto Climático (`sentimento`) e Geração de Insights (`insights`).
+   - Tratamento robusto de erros com status HTTP explícitos (`422`, `400`, `503` e `500`).
+   - Nova interface interativa no Streamlit: **🤖 Assistente IA & LLM**.
+
 ---
 
 ## 📂 Estrutura do Repositório (Padrão TDSP)
@@ -84,6 +91,8 @@ uvicorn src.api:app --reload --port 8000
 | `POST` | `/emissoes` | Atualização/cadastro de medições estaduais. |
 | `POST` | `/emissoes/sincronizar` | Dispara extração dinâmica do SEEG via Selenium. |
 | `GET` | `/co2` | Consulta série histórica real de CO₂ atmosférico da NOAA (Mauna Loa). |
+| `POST` | `/processar_texto` | Executa inferência com LLM local (`Qwen2.5-0.5B-Instruct`), retornando resposta estruturada (Response Model) com resumo, tom climático ou insights. |
+| `GET` | `/llm/status` | Retorna o status de prontidão e configuração do modelo de linguagem local. |
 
 ### 3. Iniciar o Painel Front-end (Streamlit)
 Em outro terminal (com a API em execução ou configurando `API_URL`):

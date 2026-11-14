@@ -68,6 +68,16 @@ Esta pasta descreve a arquitetura de implantação da solução, estruturada de 
 | POST | `/emissoes` | Cadastra ou atualiza registros de emissão estadual. |
 | POST | `/emissoes/sincronizar` | Dispara a extração dinâmica na Plataforma SEEG via Selenium com `WebDriverWait`. |
 | GET | `/co2` | Consulta medições reais de CO₂ atmosférico do Observatório de Mauna Loa da NOAA. |
+| POST | `/processar_texto` | Executa inferência com LLM local (`Qwen2.5-0.5B-Instruct`), retornando resposta estruturada (Response Model) com resumo, tom climático ou insights. |
+| GET | `/llm/status` | Verifica a prontidão do engine de inferência e do modelo Hugging Face na máquina local. |
+
+### Tratamento Robusto de Erros (HTTP Exceptions)
+
+A rota `POST /processar_texto` conta com tratamento rigoroso de exceções:
+- **`422 Unprocessable Entity`**: Texto de entrada inválido ou inferior a 15 caracteres.
+- **`400 Bad Request`**: Tipo de análise não suportado (aceitos: `resumo`, `sentimento`, `insights`).
+- **`503 Service Unavailable`**: Modelo de IA local indisponível (ex.: ausência de bibliotecas `torch`/`transformers` ou falha de alocação de memória no host).
+- **`500 Internal Server Error`**: Erro inesperado durante o processo de geração/inferência.
 
 ---
 

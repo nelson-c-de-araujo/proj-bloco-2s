@@ -148,6 +148,7 @@ def pagina_inicio():
     - **Indicadores Globais de CO₂**: Séries históricas oficiais com medições mensais e tendências de concentração (ppm).
     - **Panorama de Notícias & NLP**: Acompanhamento jornalístico, resumos em tempo real e nuvem de tópicos.
     - **SEEG - Emissões Brasil**: Panorama nacional consolidado para todos os Estados brasileiros.
+    - **Assistente IA & LLM**: Inteligência Artificial local (resumos, tom climático e insights) via Hugging Face Transformers.
     - **Gestão de Arquivos & Dados**: Envio de dados, formulário de ingestão e download de relatórios.
     
     > 💡 **Integração Backend**: A plataforma consome dados via **API RESTful (FastAPI)** no endpoint configurado: `{API_URL}`.
@@ -512,6 +513,98 @@ def pagina_seeg_brasil():
     )
 
 
+def pagina_llm():
+    st.title("🤖 Assistente de Inteligência Artificial (LLM)")
+    st.caption("Ferramenta Interativa com LLM integrada. Faça bom uso!")
+    
+    col_origem, col_tipo = st.columns([2, 1])
+    
+    with col_origem:
+        fonte_dados = st.radio(
+            "Origem do Texto para Análise:",
+            options=["📰 Selecionar Notícia do Acervo", "✍️ Digitar / Colar Texto Próprio"],
+            horizontal=True
+        )
+    
+    with col_tipo:
+        tarefas = [
+            ("resumo", "📝 Resumo Executivo"),
+            ("sentimento", "⚖️ Tom e Impacto Climático"),
+            ("insights", "💡 Insights Socioambientais")
+        ]
+        tarefa_selecionada = st.selectbox(
+            "Tarefa desejada:",
+            options=[t[0] for t in tarefas],
+            format_func=lambda x: dict(tarefas)[x]
+        )
+
+    texto_para_processar = ""
+    
+    if fonte_dados == "📰 Selecionar Notícia do Acervo":
+        df_noticias = obter_noticias_relevantes()
+        if not df_noticias.empty:
+            noticia_escolhida = st.selectbox(
+                "Escolha a notícia:",
+                options=df_noticias["titulo"].tolist()
+            )
+            item = df_noticias[df_noticias["titulo"] == noticia_escolhida].iloc[0]
+            texto_para_processar = f"Título: {item['titulo']}\nData: {item.get('data', '-')}\nVeículo: {item['fonte']}\nConteúdo: {item.get('resumo', '')}"
+            st.info(f"**Texto selecionado:**\n\n{texto_para_processar}")
+        else:
+            st.warning("Nenhuma notícia disponível na base. Use a opção de texto próprio.")
+    else:
+        texto_para_processar = st.text_area(
+            "Insira o texto para a IA responder",
+            placeholder="Exemplo: Os investimentos em energia solar no Brasil aumentaram 30% em 2024, impulsionados por incentivos à geração distribuída e políticas de transição ecológica...",
+            height=120
+        )
+
+    with st.expander("⚙️ Parâmetros Avançados de Inferência (Opcional)"):
+        col_p1, col_p2 = st.columns(2)
+        with col_p1:
+            tokens = st.slider("Máximo de Novos Tokens", min_value=30, max_value=300, value=150, step=10)
+        with col_p2:
+            temp = st.slider("Temperatura (Criatividade)", min_value=0.1, max_value=1.0, value=0.7, step=0.1)
+
+    if st.button("⚡ Executar Processamento com IA", type="primary"):
+        if not texto_para_processar or len(texto_para_processar.strip()) < 15:
+            st.warning("Por favor, insira ou selecione um texto com pelo menos 15 caracteres para processamento.")
+        else:
+            with st.spinner("Enviando requisição, já já o modelo responde..."):
+                payload = {
+                    "texto": texto_para_processar.strip(),
+                    "tipo_analise": tarefa_selecionada,
+                    "max_novos_tokens": tokens,
+                    "temperatura": temp
+                }
+                try:
+                    resp = requests.post(f"{API_URL}/processar_texto", json=payload, timeout=90)
+                    if resp.status_code == 200:
+                        dados_resp = resp.json()
+                        st.success("Processamento concluído com sucesso!")
+                        
+                        # Exibição estruturada do Response Model
+                        st.markdown("### 📋 Resultado Gerado pelo Modelo")
+                        st.markdown(f"> {dados_resp['resultado']}")
+                        
+                        # Metadados de execução
+                        col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+                        col_m1.metric("Status da Resposta", f"{resp.status_code} OK")
+                        col_m2.metric("Tempo de Inferência", f"{dados_resp['tempo_execucao_segundos']} s")
+                        col_m3.metric("Modelo Utilizado", dados_resp['modelo_utilizado'].split('/')[-1])
+                        col_m4.metric("Tarefa Realizada", dados_resp['tipo_analise'].capitalize())
+                    elif resp.status_code == 503:
+                        st.error(f"⚠️ Serviço Local Indisponível (503): {resp.json().get('detail', 'O modelo local ainda não foi inicializado ou faltam pacotes PyTorch/Transformers.')}")
+                    elif resp.status_code == 422:
+                        st.warning(f"⚠️ Conteúdo Incompatível (422): {resp.json().get('detail', 'Entrada de dados não atende aos requisitos.')}")
+                    else:
+                        st.error(f"Erro na API (Status {resp.status_code}): {resp.json().get('detail', 'Falha na requisição.')}")
+                except requests.exceptions.ConnectionError:
+                    st.error(f"Não foi possível conectar à API em `{API_URL}`. Certifique-se de que a API FastAPI está em execução (`uvicorn src.api:app --reload`).")
+                except Exception as e:
+                    st.error(f"Erro ao processar requisição: {str(e)}")
+
+
 def pagina_arquivos():
     st.title("📁 Gestão de Arquivos & Upload/Download")
     st.caption("Intercâmbio de dados e exportação de relatórios analíticos")
@@ -581,6 +674,7 @@ navegacao = st.navigation({
         st.Page(pagina_indicadores, title="Indicadores Globais de CO₂", icon="📈"),
         st.Page(pagina_noticias, title="Panorama de Notícias & NLP", icon="📰"),
         st.Page(pagina_seeg_brasil, title="SEEG - Emissões Brasil", icon="🇧🇷"),
+        st.Page(pagina_llm, title="Assistente IA & LLM", icon="🤖"),
         st.Page(pagina_arquivos, title="Gestão de Arquivos & Dados", icon="📁"),
     ]
 })

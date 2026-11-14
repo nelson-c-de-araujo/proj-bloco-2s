@@ -13,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from src.process_data import limpar_texto, processar_dados, padronizar_data, ordenar_noticias_por_data
 from src.scrape_news import extrair_noticias_ods13
 from src.scrape_seeg_brasil import extrair_seeg_brasil_estados_selenium
+from src.llm_engine import executar_processamento_texto, MODEL_ID_PADRAO
 
 """
 API do TP3 / Etapa 4 - ODS 13 (Ação Contra a Mudança Global do Clima)
@@ -76,6 +77,43 @@ class RegistroEmissaoEstado(BaseModel):
         default_factory=dict,
         description="Dicionário com os anos e respectivos volumes de emissão em t CO2e"
     )
+
+
+# Modelos de Requisição e Resposta para Processamento com LLM Local
+class RequisicaoProcessamentoTexto(BaseModel):
+    texto: str = Field(
+        ...,
+        min_length=15,
+        description="Texto jornalístico, técnico ou pergunta sobre clima a ser processado",
+        example="A concentração de dióxido de carbono na atmosfera atingiu 426 ppm em 2024, acelerando as secas no Semiárido brasileiro."
+    )
+    tipo_analise: str = Field(
+        default="resumo",
+        description="Tipo de processamento desejado: 'resumo', 'sentimento' ou 'insights'",
+        example="resumo"
+    )
+    max_novos_tokens: Optional[int] = Field(
+        default=150,
+        ge=20,
+        le=512,
+        description="Quantidade máxima de novos tokens a serem gerados"
+    )
+    temperatura: Optional[float] = Field(
+        default=0.7,
+        ge=0.1,
+        le=1.0,
+        description="Temperatura de amostragem da geração (criatividade/aleatoriedade)"
+    )
+
+
+class RespostaProcessamentoTexto(BaseModel):
+    status: str = Field(default="sucesso", description="Estado da execução do processamento")
+    tipo_analise: str = Field(..., description="Tipo de análise executada ('resumo', 'sentimento', 'insights')")
+    modelo_utilizado: str = Field(..., description="Identificador do modelo Hugging Face executado localmente")
+    texto_original: str = Field(..., description="Texto de entrada fornecido na requisição")
+    resultado: str = Field(..., description="Texto gerado ou classificação realizada pelo modelo de linguagem")
+    tempo_execucao_segundos: float = Field(..., description="Tempo de inferência gasto em segundos")
+    detalhes: Optional[Dict[str, Any]] = Field(default=None, description="Metadados adicionais de geração de texto")
 
 
 # Converte NaN em None para o JSON não quebrar na serialização
@@ -298,3 +336,88 @@ def consultar_co2(ano: Optional[int] = None, mes: Optional[str] = None):
         df = df[df["Mês"].str.lower() == mes.lower()]
 
     return {"total": len(df), "dados": df_para_lista(df)}
+
+
+# ==========================================
+# ROTAS DE INTELIGÊNCIA ARTIFICIAL (LLM LOCAL)
+# ==========================================
+
+@app.post(
+    "/processar_texto",
+    response_model=RespostaProcessamentoTexto,
+    tags=["Inteligência Artificial (LLM Local)"],
+    summary="Processa texto com modelo de linguagem natural (LLM) local",
+    status_code=status.HTTP_200_OK
+)
+def processar_texto(requisicao: RequisicaoProcessamentoTexto):
+    """
+    Recebe um texto enviado pelo cliente e processa através do modelo local da Hugging Face
+    (Qwen2.5-0.5B-Instruct), executando tarefas como:
+    - Resumo executivo ('resumo')
+    - Análise de tom e impacto climático ('sentimento')
+    - Geração de recomendações e implicações socioambientais ('insights')
+    
+    Retorna uma resposta estruturada e validada via Pydantic com tratamento robusto de erros.
+    """
+    tipos_permitidos = ["resumo", "sentimento", "insights"]
+    if requisicao.tipo_analise.lower() not in tipos_permitidos:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Tipo de análise '{requisicao.tipo_analise}' inválido. Escolha entre: {', '.join(tipos_permitidos)}."
+        )
+
+    # Validação de conteúdo não trivial
+    texto_limpo = requisicao.texto.strip()
+    if len(texto_limpo) < 15:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Texto de entrada muito curto. Forneça ao menos 15 caracteres com conteúdo significativo para análise."
+        )
+
+    try:
+        resultado_dict = executar_processamento_texto(
+            texto=texto_limpo,
+            tipo_analise=requisicao.tipo_analise.lower(),
+            max_novos_tokens=requisicao.max_novos_tokens or 150,
+            temperatura=requisicao.temperatura or 0.7
+        )
+
+        return RespostaProcessamentoTexto(
+            status="sucesso",
+            tipo_analise=requisicao.tipo_analise.lower(),
+            modelo_utilizado=resultado_dict["modelo"],
+            texto_original=texto_limpo,
+            resultado=resultado_dict["resultado"],
+            tempo_execucao_segundos=resultado_dict["tempo_execucao_segundos"],
+            detalhes={"tokens_gerados": resultado_dict.get("tokens_gerados")}
+        )
+
+    except RuntimeError as e:
+        # Modelo não pôde ser carregado (ex: falta de dependências torch/transformers no host)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Serviço de IA local temporariamente indisponível: {str(e)}"
+        )
+    except Exception as e:
+        # Falha genérica durante a geração
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro interno durante a inferência do modelo local: {str(e)}"
+        )
+
+
+@app.get(
+    "/llm/status",
+    tags=["Inteligência Artificial (LLM Local)"],
+    summary="Verifica o status de prontidão do modelo local"
+)
+def status_modelo_llm():
+    """Informa o modelo configurado e a prontidão do engine de inferência local."""
+    import src.llm_engine as engine
+    return {
+        "modelo_configurado": engine.MODEL_ID_PADRAO,
+        "carregado_em_memoria": engine._PIPELINE is not None,
+        "erro_previo": engine._ERRO_INICIALIZACAO,
+        "ambiente": "100% Local (Hugging Face Transformers / PyTorch)"
+    }
+

@@ -69,6 +69,6 @@ Projeto_Bloco_Etapa4/
 
 ## 5. Limitações Residuais e Próximos Passos (Etapa Final / TP5)
 
-- **Autenticação de Endpoints:** A API opera atualmente sem camadas de autenticação (OAuth2/API Key) no `POST /noticias` e `POST /emissoes`, recomendando-se proteção por token antes de publicação aberta em produção.
-- **Integração com LLM:** Executar a etapa de sumarização e geração de insights com Modelos de Linguagem de Grande Porte a partir dos dados consolidados do SEEG e das notícias (conforme especificado em `docs/Modeling/preparacao_llm.md`).
-- **Homologação Final com Usuários:** Concluir a rodada de validação de aceitação com usuários em `docs/Acceptance/`.
+- **Autenticação de Endpoints:** A API opera atualmente sem camadas de autenticação (OAuth2/API Key) nos endpoints de mutação (`POST`), recomendando-se proteção por token antes de publicação aberta em produção.
+- **Aperfeiçoamento dos Prompts do LLM:** Refinar os templates ChatML para sumarização de tabelas numéricas do SEEG e respostas analíticas de séries temporais.
+- **Homologação Final com Usuários:** Concluir a rodada formal de validação de aceitação com stakeholders em `docs/Acceptance/`.
