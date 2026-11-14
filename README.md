@@ -1,71 +1,101 @@
-# Projeto_Bloco_EtapaTP3 - Monitor de Emissões & Ação Climática (ODS 13)
+# Projeto_Bloco_Etapa4 - Monitor de Emissões & Ação Climática (ODS 13)
 
-Este repositório contém a terceira etapa de desenvolvimento (`Projeto_Bloco_EtapaTP3`) da aplicação de monitoramento e análise de emissões e panorama climático, desenvolvida sob os frameworks **TDSP (Team Data Science Process)** e **CRISP-DM**, alinhada ao **ODS 13 (Ação Contra a Mudança Global do Clima)**.
+Este repositório contém a quarta etapa de desenvolvimento (`Projeto_Bloco_Etapa4`) da plataforma integrada de monitoramento socioambiental e análise climática, desenvolvida sob os frameworks metodológicos **TDSP (Team Data Science Process)** e **CRISP-DM**, alinhada ao **ODS 13 (Ação Contra a Mudança Global do Clima)**.
 
-## Novidades da Etapa (TP3)
+---
 
-1. **Arquitetura Multipage no Streamlit**:
-   - Menu de navegação centralizado com divisão em páginas especializadas:
-     - 🏠 **Visão Geral**: Contextualização do projeto, objetivos e indicadores consolidados.
-     - 📈 **Indicadores Globais de CO₂**: Gráficos temporais de concentração (ppm) e médias.
-     - 📰 **Panorama de Notícias & NLP**: Web scraping dinâmico e Nuvem de Palavras.
-     - 🇧🇷 **SEEG - Emissões Brasil**: Página nacional com dados históricos (1990–2024) clusterizados por todos os Estados brasileiros extraídos da Plataforma SEEG via **Selenium**.
-     - 📁 **Gestão de Arquivos & Dados**: Módulo de upload de CSVs customizados e download de relatórios.
-2. **Web Scraping Dinâmico via Selenium (SEEG Brasil)**:
-   - Módulo automatizado (`src/scrape_seeg_brasil.py`) que utiliza o Google Chrome em modo *headless* para acessar a Single Page Application da Plataforma SEEG com filtros dinâmicos na URL, interagindo com o contêiner `sticky-table` e extraindo a matriz histórica (1990–2024) de emissões de todos os 27 estados e total nacional.
+## 🚀 Principais Entregas e Melhorias da Etapa 4
 
-## Estrutura do Repositório (Padrão TDSP)
+1. **Integração Completa via API RESTful (FastAPI + Streamlit via HTTP)**:
+   - O painel em [`code/app.py`](code/app.py) consome o backend desacoplado via requisições HTTP (`requests.get` e `requests.post`), utilizando a variável de ambiente `API_URL` (padrão: `http://127.0.0.1:8000`).
+   - Rotas consumidas no painel:
+     - `GET /emissoes`: consome as séries históricas do SEEG Brasil.
+     - `GET /noticias`: consome as matérias jornalísticas e seus resumos.
+     - `GET /co2`: consome as concentrações reais de CO₂ atmosférico da NOAA.
+     - `POST /noticias/sincronizar` e `POST /emissoes/sincronizar`: acionam a atualização de dados no backend sob demanda.
+     - `POST /noticias`: permite cadastro direto de novas notícias através de formulário interativo no painel.
+   - Resiliência integrada: mecanismo de fallback local automático caso a API esteja temporariamente offline.
 
-- `data/`:
-  - `data/raw/`: Dados brutos (`noticias_ods13.csv`, `conteudo_ods13.txt`, `seeg_brasil_estados.csv`).
-  - `data/processed/`: Dados tratados (`noticias_ods13_limpo.csv`, `texto_nuvem_palavras.txt`, `seeg_brasil_estados_limpo.csv`).
-- `docs/`: Documentação estruturada pelas fases do ciclo de vida TDSP:
-  - `BusinessUnderstanding/`: Entendimento do problema de negócio e objetivos.
-  - `DataUnderstanding/`: Exploração e mapeamento das fontes de dados (SEEG Brasil e notícias climáticas).
-  - `DataPreparation/`: Documentação de limpeza, stopwords, normalização numérica e formatação de séries estaduais.
-  - `Modeling/`: Análise visual (WordCloud) e agregações temporais/estaduais.
-  - `Deployment/`: Orientações de implantação da aplicação Streamlit multipage.
-  - `Acceptance/`: Critérios de validação com stakeholders.
-- `src/`: Scripts do pipeline de dados:
-  - `scrape_seeg_brasil.py`: Raspagem dinâmica com Selenium da tabela de emissões por Estado na Plataforma SEEG.
-  - `scrape_news.py`: Raspagem de notícias climáticas via BeautifulSoup.
-  - `process_data.py`: Tratamento de textos, stopwords, conversão numérica e consolidação de datasets.
-- `models/`: Artefatos e modelos serializados.
-- `code/`: Aplicação principal ([`app.py`](code/app.py)) com interface interativa multipage, filtros reativos e persistência de sessão.
-- `artifacts/`: Artefatos da documentação ([`project_charter.md`](artifacts/project_charter.md) e [`data_summary_report.md`](artifacts/data_summary_report.md)).
+2. **Web Scraping Dinâmico com Selenium e `WebDriverWait`**:
+   - O módulo [`src/scrape_seeg_brasil.py`](src/scrape_seeg_brasil.py) substituiu o delay estático (`time.sleep`) por espera explícita inteligente (`WebDriverWait` com `expected_conditions`), aguardando dinamicamente a renderização completa do DOM/React na Single Page Application da Plataforma SEEG antes da extração da tabela `sticky-table`.
 
-## Como Executar a Aplicação
+3. **Extração Robusta de Resumos de Notícias**:
+   - Aprimoramento no scraper [`src/scrape_news.py`](src/scrape_news.py) com busca aprofundada na árvore do HTML e fallback para as meta tags (`meta[name="description"]` / `og:description`), eliminando o texto padrão genérico e garantindo resumos ricos e fiéis ao conteúdo original.
 
-1. Instale as dependências:
-   ```bash
-   pip install -r requirements.txt
-   ```
+4. **Correção Metodológica na Contagem de Estados (27 UFs)**:
+   - A contagem de "Estados Monitorados" no painel SEEG Brasil reflete com rigor as **27 Unidades Federativas** (26 estados e o Distrito Federal), separando a categoria residual *"Não Alocado"* (que abrange emissões não regionalizáveis, como offshore e aviação) com nota explicativa dedicada.
 
-2. Execute o pipeline de extração e tratamento de dados:
-   ```bash
-   python src/scrape_seeg_brasil.py
-   python src/scrape_news.py
-   python src/process_data.py
-   ```
+5. **Série Histórica Real de CO₂ (NOAA Mauna Loa)**:
+   - Substituição dos dados de demonstração pela série histórica oficial de medições mensais e curvas de tendência dessazonalizada do **Observatório de Mauna Loa (NOAA Global Monitoring Laboratory)**.
 
-3. Inicie a aplicação Streamlit:
-   ```bash
-   streamlit run code/app.py
-   ```
+---
 
-4. (Opcional) Inicie a API FastAPI a partir da raiz do projeto:
-   ```bash
-   uvicorn src.api:app --reload
-   ```
-   Acesse `http://127.0.0.1:8000/docs` para ver a documentação interativa.
+## 📂 Estrutura do Repositório (Padrão TDSP)
 
-   | Método | Rota | Função |
-   |--------|------|--------|
-   | GET | `/` | Verifica se a API está no ar. |
-   | GET | `/noticias?termo=calor&limite=20` | Consulta notícias, com filtro opcional por título ou fonte. |
-   | POST | `/noticias` | Envia uma nova notícia (JSON com `fonte`, `titulo` e `link`). Títulos repetidos retornam erro 409. |
-   | GET | `/emissoes?estado=Rio de Janeiro` | Consulta as emissões de 1990 a 2024 de um estado, ou de todos se o parâmetro for omitido. |
+```
+Projeto_Bloco_Etapa4/
+|-- data/
+|   |-- raw/                        # Dados brutos (notícias, SEEG, série NOAA CO₂)
+|   |-- processed/                  # Dados limpos e normalizados para consumo
+|-- docs/                           # Documentação pelas fases do ciclo TDSP
+|   |-- BusinessUnderstanding/      # Entendimento do problema e objetivos
+|   |-- DataUnderstanding/          # Mapeamento e dicionário das fontes
+|   |-- DataPreparation/            # Pipeline de extração, limpeza e normalização
+|   |-- Modeling/                   # NLP, agregações e preparação para LLM
+|   |-- Deployment/                 # Arquitetura de deploy (Streamlit + FastAPI)
+|   |-- Acceptance/                 # Validação com stakeholders e aceitação
+|-- src/                            # Backend, pipelines e API
+|   |-- api.py                      # API RESTful FastAPI (GET e POST)
+|   |-- scrape_seeg_brasil.py       # Coleta dinâmica SEEG via Selenium + WebDriverWait
+|   |-- scrape_news.py              # Coleta de notícias via BeautifulSoup + Meta description
+|   |-- process_data.py             # Pré-processamento, limpeza textual e conversões numéricas
+|-- code/
+|   |-- app.py                      # Painel analítico Streamlit multipage (HTTP client)
+|-- artifacts/                      # Project Charter e Data Summary Report
+|-- requirements.txt                # Dependências do projeto
+|-- README.md                       # Documentação principal
+```
 
+---
 
+## 🛠️ Como Executar a Solução
 
+### 1. Instalação das Dependências
+Em um ambiente virtual Python (3.10+):
+```bash
+pip install -r requirements.txt
+```
 
+### 2. Iniciar a API Backend (FastAPI)
+A partir da raiz do projeto, inicie o servidor da API:
+```bash
+uvicorn src.api:app --reload --port 8000
+```
+> Documentação interativa (Swagger UI): **`http://127.0.0.1:8000/docs`**
+
+#### Tabela de Endpoints da API:
+| Método | Endpoint | Descrição |
+|---|---|---|
+| `GET` | `/` | Confirmação de status da API. |
+| `GET` | `/noticias` | Consulta matérias cadastradas, com suporte a filtro `termo` e `limite`. |
+| `POST` | `/noticias` | Cadastro manual de notícia (payload JSON com `fonte`, `titulo`, `link`, `resumo`). |
+| `POST` | `/noticias/sincronizar` | Dispara o web scraping e reprocessamento de notícias. |
+| `GET` | `/emissoes` | Consulta histórica de emissões brutas por estado (1990–2024). |
+| `POST` | `/emissoes` | Atualização/cadastro de medições estaduais. |
+| `POST` | `/emissoes/sincronizar` | Dispara extração dinâmica do SEEG via Selenium. |
+| `GET` | `/co2` | Consulta série histórica real de CO₂ atmosférico da NOAA (Mauna Loa). |
+
+### 3. Iniciar o Painel Front-end (Streamlit)
+Em outro terminal (com a API em execução ou configurando `API_URL`):
+```bash
+streamlit run code/app.py
+```
+Para apontar para uma API em outro host ou porta:
+```bash
+# Exemplo no Linux/Mac:
+export API_URL="http://seu-servidor:8000" && streamlit run code/app.py
+
+# Exemplo no Windows (PowerShell):
+$env:API_URL="http://seu-servidor:8000"; streamlit run code/app.py
+```
+O painel estará acessível em **`http://localhost:8501`**.

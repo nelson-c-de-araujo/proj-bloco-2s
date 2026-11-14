@@ -1,45 +1,100 @@
 # TDSP - Deployment
 
-Esta pasta descreve como a solução é executada e implantada. Ela cobre duas partes: a aplicação web em Streamlit e a API em FastAPI.
+Esta pasta descreve a arquitetura de implantação da solução, estruturada de forma desacoplada entre uma **API de Serviços RESTful (FastAPI)** e uma **Interface Analítica Web (Streamlit)**.
 
-## 1. Aplicação Streamlit
+---
 
-- **Arquivo principal:** [`code/app.py`](../../code/app.py)
-- **Páginas:** Visão Geral, Indicadores Globais de CO₂, Panorama de Notícias & NLP, SEEG - Emissões Brasil e Gestão de Arquivos & Dados.
-- **Execução:** `streamlit run code/app.py` a partir da raiz do projeto.
-- **Atualização de dados:** os botões "Atualizar Notícias" e "Sincronizar Plataforma SEEG" executam os scripts de `src/` e limpam o cache.
+## 1. Arquitetura da Solução
 
-## 2. API FastAPI
-
-- **Arquivo principal:** [`src/api.py`](../../src/api.py)
-- **Execução:** `uvicorn src.api:app --reload` a partir da raiz do projeto.
-- **Documentação interativa:** `http://127.0.0.1:8000/docs`
-
-| Método | Rota | Função |
-|--------|------|--------|
-| GET | `/` | Verifica se a API está no ar. |
-| GET | `/noticias` | Consulta notícias, com filtro opcional por `termo` e limite de resultados (`limite`). |
-| POST | `/noticias` | Cadastra uma notícia nova nas bases bruta e limpa. Retorna `409` se o título já existir. |
-| GET | `/emissoes` | Consulta as emissões de 1990 a 2024, com filtro opcional por `estado`. |
-
-**Exemplo de envio de notícia (POST /noticias):**
-
-```json
-{
-  "fonte": "Fonte de teste",
-  "titulo": "Título da notícia",
-  "link": "https://exemplo.com/noticia",
-  "resumo": "Resumo opcional.",
-  "categoria": "ODS 13 - Ação Climática"
-}
+```
+[ Usuário / Navegador ]
+          │
+          ▼ (Porta 8501)
+┌─────────────────────────────────┐
+│     Painel Streamlit            │
+│       (code/app.py)             │
+│                                 │
+│  - Navegação Multipage          │
+│  - Visualizações e Gráficos     │
+│  - Consumo via requests HTTP    │
+└────────────────┬────────────────┘
+                 │
+                 │ HTTP GET / POST (com variável API_URL)
+                 ▼
+┌─────────────────────────────────┐
+│      API Backend FastAPI        │
+│         (src/api.py)            │
+│                                 │
+│  - Documentação Swagger /docs   │
+│  - Validação via Pydantic       │
+│  - Gatilhos de Pipelines        │
+└────────────────┬────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│    Pipeline de Dados (src/)     │
+│  - scrape_seeg_brasil.py        │
+│  - scrape_news.py               │
+│  - process_data.py              │
+└────────────────┬────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│        Camada de Dados          │
+│     data/raw & data/processed   │
+└─────────────────────────────────┘
 ```
 
-## 3. Dependências
+---
 
-Todas as bibliotecas estão em [`requirements.txt`](../../requirements.txt). Para o ambiente local, crie um ambiente virtual e instale com `pip install -r requirements.txt`.
+## 2. API Backend (FastAPI)
 
-## 4. Pendências de implantação
+- **Arquivo principal:** [`src/api.py`](../../src/api.py)
+- **Execução:**
+  ```bash
+  uvicorn src.api:app --reload --port 8000
+  ```
+- **Documentação interativa:** `http://127.0.0.1:8000/docs`
 
-- A aplicação e a API rodam apenas localmente. Não há ainda um endereço público.
-- A API não tem autenticação. Antes de publicar, o `POST /noticias` deve exigir uma chave.
-- O scraping do SEEG usa Selenium e Google Chrome, o que exige o navegador instalado no servidor.
+### Catálogo de Rotas Disponíveis
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/` | Retorna o status de integridade da API. |
+| GET | `/noticias` | Consulta notícias cadastradas, com suporte a filtro opcional por `termo` e `limite`. |
+| POST | `/noticias` | Cadastra uma nova notícia enviada pelo cliente (com validação Pydantic e prevenção de duplicatas). |
+| POST | `/noticias/sincronizar` | Dispara o web scraping ao vivo nos portais de notícias e o pré-processamento de NLP. |
+| GET | `/emissoes` | Consulta os dados históricos de emissões do SEEG Brasil (1990–2024), com filtro opcional por `estado`. |
+| POST | `/emissoes` | Cadastra ou atualiza registros de emissão estadual. |
+| POST | `/emissoes/sincronizar` | Dispara a extração dinâmica na Plataforma SEEG via Selenium com `WebDriverWait`. |
+| GET | `/co2` | Consulta medições reais de CO₂ atmosférico do Observatório de Mauna Loa da NOAA. |
+
+---
+
+## 3. Aplicação Front-end (Streamlit)
+
+- **Arquivo principal:** [`code/app.py`](../../code/app.py)
+- **Execução:**
+  ```bash
+  streamlit run code/app.py
+  ```
+- **Configuração de Ambiente (`API_URL`):**
+  O painel lê a variável de ambiente `API_URL` para realizar as chamadas HTTP. Caso não informada, assume por padrão `http://127.0.0.1:8000`.
+  - Exemplo para ambiente local:
+    ```bash
+    streamlit run code/app.py
+    ```
+  - Exemplo para ambiente em nuvem ou container:
+    ```bash
+    API_URL="https://minha-api-clima.com" streamlit run code/app.py
+    ```
+- **Mecanismo de Resiliência:** Caso a API esteja em processo de reinicialização ou inacessível, as rotinas de carregamento executam um fallback elegante direto para a camada de dados em disco, assegurando alta disponibilidade ao usuário final.
+
+---
+
+## 4. Dependências e Requisitos de Ambiente
+
+As dependências estão listadas em [`requirements.txt`](../../requirements.txt).
+Requisitos de infraestrutura:
+- Python 3.10 ou superior.
+- Google Chrome instalado no sistema para a execução do Selenium em modo headless.

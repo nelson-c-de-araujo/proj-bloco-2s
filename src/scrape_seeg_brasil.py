@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 """
 Módulo de Extração de Emissões Nacionais por Estado via Selenium (Páginas Dinâmicas da Plataforma SEEG).
@@ -25,7 +27,7 @@ RAW_OUTPUT_CSV = os.path.join("data", "raw", "seeg_brasil_estados.csv")
 def extrair_seeg_brasil_estados_selenium(output_path: str = RAW_OUTPUT_CSV) -> pd.DataFrame:
     """
     Executa o navegador Chrome em modo headless via Selenium para acessar a SPA da Plataforma SEEG,
-    aguarda a renderização dos componentes assíncronos e extrai a tabela 'sticky-table'
+    aguarda a renderização dos componentes assíncronos via WebDriverWait e extrai a tabela 'sticky-table'
     com o histórico de emissões (1990-2024) desagregado por todos os Estados do Brasil.
     """
     print(f"[Selenium SEEG] Acessando plataforma dinâmica: {SEEG_PLATAFORMA_ESTADOS_URL}")
@@ -41,7 +43,12 @@ def extrair_seeg_brasil_estados_selenium(output_path: str = RAW_OUTPUT_CSV) -> p
     try:
         driver = webdriver.Chrome(options=options)
         driver.get(SEEG_PLATAFORMA_ESTADOS_URL)
-        time.sleep(12)  # Tempo suficiente para carregar D3/React e preencher a tabela
+        
+        # Espera explícita via WebDriverWait para renderização da tabela dinâmica D3/React
+        wait = WebDriverWait(driver, 25)
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.sticky-table")))
+        # Aguarda até que as linhas da tabela sejam populadas (ao menos 20 linhas para garantir todos os estados)
+        wait.until(lambda d: len(d.find_elements(By.CSS_SELECTOR, "div.sticky-table div.sticky-table-row")) >= 20)
 
         soup = BeautifulSoup(driver.page_source, "html.parser")
         

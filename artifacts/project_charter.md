@@ -1,4 +1,4 @@
-# Projeto_Bloco_EtapaTP3 - Instituto Infnet
+# Projeto_Bloco_Etapa4 - Instituto Infnet
 **Aluno: Nelson C. de Araujo**  
 **Projeto da Agenda 2030 - ODS 13: Ação Contra a Mudança Global do Clima**
 
@@ -8,82 +8,67 @@
 
 **Problema:** Gestores públicos, empresas e pesquisadores têm dificuldade para acompanhar as emissões de gases de efeito estufa do Brasil em nível estadual e para entender o que está sendo discutido sobre clima. Os dados oficiais existem, mas estão em plataformas separadas, em formatos pouco práticos e sem integração com as notícias do tema.
 
-**Revisão em relação ao TP2:** O problema continua válido. Mudou o escopo da solução. No TP2, o foco era um painel com séries de CO₂ e notícias. No TP3, o painel passou a usar a base oficial de emissões por estado do SEEG, e a solução ganhou uma API para acesso programático. Os dados de CO₂ atmosférico ainda não são reais (ver seção 5).
+**Revisão em relação ao TP3:** Na Etapa 4 (penúltima etapa do projeto), a solução atingiu o estágio de integração desacoplada completa:
+- O painel Streamlit consome a API FastAPI via chamadas HTTP (`requests.get` e `requests.post`) com configuração dinâmica por variável de ambiente (`API_URL`).
+- Os dados sintéticos de CO₂ atmosférico foram integralmente substituídos por séries históricas reais da NOAA (Observatório de Mauna Loa).
+- A automação em Selenium foi aprimorada com `WebDriverWait`, eliminando delays cegos (`time.sleep`).
+- A captura de notícias passou a extrair resumos reais via inspeção estrutural e meta descriptions.
+- A contagem de unidades federativas foi retificada para 27 UFs, tratando "Não Alocado" com a devida nota metodológica.
 
 ---
 
-## 2. Objetivos
+## 2. Objetivos e Entregas da Etapa 4
 
-**Objetivo geral:** Oferecer um painel interativo e uma API que reúnam emissões oficiais por estado (SEEG), notícias sobre ação climática e uma base preparada para tarefas com LLM.
+**Objetivo geral:** Disponibilizar uma arquitetura moderna e desacoplada composta por uma API RESTful de serviços e um painel interativo analítico, integrando dados oficiais do SEEG Brasil, medições reais de CO₂ da NOAA e acervo dinâmico de notícias socioambientais com processamento de linguagem natural.
 
-**Metas do TP3:**
-- Painel Streamlit com navegação multipage: Visão Geral, Indicadores Globais de CO₂, Panorama de Notícias & NLP, SEEG - Emissões Brasil e Gestão de Arquivos & Dados.
-- Coleta automatizada das emissões estaduais do SEEG com Selenium (página dinâmica), de 1990 a 2024.
-- API FastAPI com quatro rotas (`GET /`, `GET /noticias`, `POST /noticias`, `GET /emissoes`), documentada no Swagger.
-- Documentação de preparação para LLM em `docs/Modeling/preparacao_llm.md`.
-
-**Metas mantidas do TP2:**
-- Coleta de notícias por *web scraping* com BeautifulSoup e nuvem de palavras a partir do texto coletado.
-- Upload de CSV próprio e download de relatórios.
-- Cache (`@st.cache_data`) e estado de sessão (`st.session_state`).
-
-**Metas que ainda não foram atingidas:**
-- Séries reais de CO₂ atmosférico (NOAA). O gráfico usa valores de demonstração.
-- Notícias com resumo completo. Hoje, 7 de 10 matérias usam um resumo padrão.
+**Metas da Etapa 4 Concluídas:**
+- **Integração HTTP Client-Server:** O `code/app.py` consome os endpoints da API (`/noticias`, `/emissoes`, `/co2`) via `requests.get`, dispara rotinas via `requests.post` e permite cadastrar notícias com payload JSON validado via Pydantic.
+- **Parametrização por Variável de Ambiente:** Implementação de `API_URL` (com valor padrão `http://127.0.0.1:8000`) para suportar deploys locais e em nuvem/containers.
+- **Robustez no Web Scraping com Selenium:** Substituição de `time.sleep(12)` por esperas explícitas `WebDriverWait` e `expected_conditions`, sincronizando a captura exatamente no término da renderização do React/D3 na Plataforma SEEG.
+- **Extração Real de Resumos:** Aprimoramento da extração de notícias em `src/scrape_news.py`, eliminando resumos padrões genéricos.
+- **Série Real de Concentração de CO₂:** Substituição de dados mockados por medições reais oficiais (ppm e tendência) do Observatório de Mauna Loa da NOAA.
+- **Retificação Metodológica de Unidades Federativas:** Métrica estrita de 27 Estados/DF monitorados, com isolamento e esclarecimento sobre "Não Alocado".
 
 ---
 
 ## 3. Metodologia e Ciclo de Vida do Projeto (TDSP / CRISP-DM)
 
-O projeto segue o **Team Data Science Process (TDSP)**, com apoio das etapas do CRISP-DM:
+O projeto segue rigorosamente o framework **Team Data Science Process (TDSP)**:
 
-1. **Business Understanding (`docs/BusinessUnderstanding/`):** definição do problema, objetivos e metas (este documento).
-2. **Data Understanding (`docs/DataUnderstanding/`):** identificação das fontes de emissões (SEEG) e de notícias (Agência Brasil e ONU News). Ver [`data_summary_report.md`](data_summary_report.md).
-3. **Data Preparation (`docs/DataPreparation/`):** scripts de coleta e limpeza em `src/` (`scrape_seeg_brasil.py`, `scrape_news.py`, `process_data.py`).
-4. **Modeling & Analytics (`docs/Modeling/`):** agregações, nuvem de palavras e preparação para LLM ([`preparacao_llm.md`](../docs/Modeling/preparacao_llm.md)).
-5. **Deployment (`docs/Deployment/`):** aplicação Streamlit (`code/app.py`) e API FastAPI (`src/api.py`).
-6. **Customer Acceptance (`docs/Acceptance/`):** validação com stakeholders. Ainda não realizada.
+1. **Business Understanding (`docs/BusinessUnderstanding/`):** Alinhamento contínuo das metas ao ODS 13 e aos requisitos da disciplina.
+2. **Data Understanding (`docs/DataUnderstanding/`):** Mapeamento detalhado das fontes oficiais (SEEG Brasil, NOAA Mauna Loa, Agência Brasil, ONU News). Ver [`data_summary_report.md`](data_summary_report.md).
+3. **Data Preparation (`docs/DataPreparation/`):** Scripts em `src/` com limpeza de stopwords, conversão de formatos numéricos brasileiros e estruturação para modelos analíticos.
+4. **Modeling & Analytics (`docs/Modeling/`):** Nuvem de palavras com pesos de frequência, séries temporais e documentação de preparação para tarefas com LLMs ([`preparacao_llm.md`](../docs/Modeling/preparacao_llm.md)).
+5. **Deployment (`docs/Deployment/`):** Execução paralela do servidor FastAPI (porta 8000) e do painel Streamlit (porta 8501).
+6. **Customer Acceptance (`docs/Acceptance/`):** Validações com base no feedback avaliativo das entregas parciais e critérios de completude.
 
 ---
 
-## 4. Estrutura do Repositório
+## 4. Estrutura Atualizada do Repositório
 
 ```
-Projeto_Bloco_EtapaTP3/
+Projeto_Bloco_Etapa4/
 |-- data/
-|   |-- raw/                        # Dados brutos (noticias, conteúdo, SEEG)
-|   |-- processed/                  # Dados limpos (notícias, nuvem de palavras, SEEG)
-|-- docs/                           # Documentação por fase do TDSP
-|-- models/                         # Modelos e artefatos serializados
-|-- src/                            # Pipeline de dados e API
-|   |-- scrape_seeg_brasil.py       # Coleta do SEEG com Selenium
-|   |-- scrape_news.py              # Coleta de notícias com BeautifulSoup
-|   |-- process_data.py             # Limpeza de texto, stopwords e conversão numérica
-|   |-- api.py                      # API FastAPI
+|   |-- raw/                        # noticias_ods13.csv, conteudo_ods13.txt, seeg_brasil_estados.csv, co2_mensal_noaa.csv
+|   |-- processed/                  # noticias_ods13_limpo.csv, texto_nuvem_palavras.txt, seeg_brasil_estados_limpo.csv, co2_mensal_noaa_limpo.csv
+|-- docs/                           # Documentação por fase TDSP
+|-- models/                         # Modelos e artefatos analíticos
+|-- src/                            # Backend, API e pipelines
+|   |-- api.py                      # API RESTful FastAPI completa (GET / POST)
+|   |-- scrape_seeg_brasil.py       # Coleta dinâmica SEEG com Selenium e WebDriverWait
+|   |-- scrape_news.py              # Coleta de notícias com busca estrutural de resumo
+|   |-- process_data.py             # Pré-processamento, normalização numérica e limpeza textual
 |-- code/
-|   |-- app.py                      # Painel Streamlit multipage
-|-- artifacts/                      # Charter e relatório de dados
+|   |-- app.py                      # Painel Streamlit multipage consumindo a API via HTTP
+|-- artifacts/                      # project_charter.md e data_summary_report.md
 |-- requirements.txt
 |-- README.md
 ```
 
 ---
 
-## 5. Limitações Conhecidas
+## 5. Limitações Residuais e Próximos Passos (Etapa Final / TP5)
 
-- **Indicador de CO₂:** a página "Indicadores Globais de CO₂" usa uma série de demonstração de 2024, fixa no código. Não há integração com a NOAA. A seção de fontes do relatório de dados descreve a integração como planejada.
-- **Resumos das notícias:** o scraping não consegue ler o parágrafo de 7 das 10 matérias, e o resumo padrão é gravado no lugar.
-- **Métrica "Estados Monitorados":** a página do SEEG conta 28 linhas. Isso inclui "Não Alocado", que não é uma unidade federativa. O correto seria 27.
-- **Segurança da API:** não há autenticação. O `POST /noticias` pode ser usado por qualquer pessoa com acesso à rede.
-- **Ambiente de execução:** o scraping do SEEG exige Google Chrome instalado.
-
----
-
-## 6. Próximos Passos
-
-1. Corrigir a contagem de estados e tratar "Não Alocado" separadamente.
-2. Substituir a série de demonstração de CO₂ por dados reais da NOAA, ou remover a página.
-3. Extrair o corpo das notícias, em vez do resumo padrão.
-4. Adicionar autenticação ao `POST /noticias`.
-5. Iniciar a etapa de LLM, começando pela geração de texto a partir dos dados do SEEG.
-6. Validar a solução com stakeholders e registrar em `docs/Acceptance/`.
+- **Autenticação de Endpoints:** A API opera atualmente sem camadas de autenticação (OAuth2/API Key) no `POST /noticias` e `POST /emissoes`, recomendando-se proteção por token antes de publicação aberta em produção.
+- **Integração com LLM:** Executar a etapa de sumarização e geração de insights com Modelos de Linguagem de Grande Porte a partir dos dados consolidados do SEEG e das notícias (conforme especificado em `docs/Modeling/preparacao_llm.md`).
+- **Homologação Final com Usuários:** Concluir a rodada de validação de aceitação com usuários em `docs/Acceptance/`.

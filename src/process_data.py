@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import re
+from datetime import datetime
 
 """
 Script de Pré-processamento de Dados para o TP2 - ODS 13
@@ -18,6 +19,82 @@ STOPWORDS_PT = set([
     "dela", "delas", "esta", "estes", "estas", "aquele", "aquela", "aqueles", "aquela", "diz", 
     "sobre", "notícia", "ação", "climática", "ods", "13", "facebooktwitter", "br"
 ])
+
+MESES_PT = {
+    'janeiro': 1, 'fev': 2, 'fevereiro': 2, 'março': 3, 'marco': 3, 'mar': 3,
+    'abril': 4, 'abr': 4, 'maio': 5, 'mai': 5, 'junho': 6, 'jun': 6,
+    'julho': 7, 'jul': 7, 'agosto': 8, 'ago': 8, 'setembro': 9, 'set': 9,
+    'outubro': 10, 'out': 10, 'novembro': 11, 'nov': 11, 'dezembro': 12, 'dez': 12
+}
+
+
+def padronizar_data(texto_data: str) -> str:
+    """
+    Padroniza qualquer variação textual de data para o formato brasileiro DD/MM/AAAA.
+    Exemplos:
+      - '11 Novembro 2026' -> '11/11/2026'
+      - '9 Novembro 2026'  -> '09/11/2026'
+      - '2026-11-09'       -> '09/11/2026'
+      - '09/11/2026'       -> '09/11/2026'
+    """
+    if not texto_data or not isinstance(texto_data, str):
+        return datetime.now().strftime("%d/%m/%Y")
+    
+    texto = texto_data.strip().lower()
+
+    # 1. Padrão numérico: DD/MM/AAAA ou DD-MM-AAAA
+    m_ddmmyyyy = re.search(r'\b(\d{1,2})[/.-](\d{1,2})[/.-](\d{2,4})\b', texto)
+    if m_ddmmyyyy:
+        dia, mes, ano = m_ddmmyyyy.groups()
+        if len(ano) == 2:
+            ano = f"20{ano}"
+        try:
+            dt = datetime(int(ano), int(mes), int(dia))
+            return dt.strftime("%d/%m/%Y")
+        except ValueError:
+            pass
+
+    # 2. Padrão ISO: AAAA-MM-DD
+    m_iso = re.search(r'\b(\d{4})[-/](\d{1,2})[-/](\d{1,2})\b', texto)
+    if m_iso:
+        ano, mes, dia = m_iso.groups()
+        try:
+            dt = datetime(int(ano), int(mes), int(dia))
+            return dt.strftime("%d/%m/%Y")
+        except ValueError:
+            pass
+
+    # 3. Padrão por extenso: '11 Novembro 2026' ou '9 de Novembro de 2026'
+    m_ext = re.search(r'\b(\d{1,2})\s*(?:de\s+)?([a-zçã]+)\s*(?:de\s+)?(\d{4})\b', texto)
+    if m_ext:
+        dia, nome_mes, ano = m_ext.groups()
+        if nome_mes in MESES_PT:
+            mes = MESES_PT[nome_mes]
+            try:
+                dt = datetime(int(ano), int(mes), int(dia))
+                return dt.strftime("%d/%m/%Y")
+            except ValueError:
+                pass
+
+    return datetime.now().strftime("%d/%m/%Y")
+
+
+def ordenar_noticias_por_data(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Padroniza todas as datas da coluna 'data' e ordena o DataFrame
+    de forma decrescente (as notícias mais recentes aparecem primeiro).
+    """
+    if df.empty or 'data' not in df.columns:
+        return df
+    
+    df_ord = df.copy()
+    df_ord['data'] = df_ord['data'].apply(padronizar_data)
+    
+    # Coluna auxiliar datetime para ordenação estrita
+    df_ord['_dt_temp'] = pd.to_datetime(df_ord['data'], format='%d/%m/%Y', errors='coerce')
+    df_ord = df_ord.sort_values(by=['_dt_temp'], ascending=False).drop(columns=['_dt_temp'])
+    return df_ord
+
 
 def limpar_texto(texto):
     if not isinstance(texto, str):
@@ -37,8 +114,16 @@ def processar_dados():
     csv_raw = "data/raw/noticias_ods13.csv"
     if os.path.exists(csv_raw):
         df = pd.read_csv(csv_raw)
+        if 'data' not in df.columns:
+            df['data'] = datetime.now().strftime("%d/%m/%Y")
+        
+        # Padroniza datas e ordena do mais recente para o mais antigo
+        df = ordenar_noticias_por_data(df)
         df['titulo_limpo'] = df['titulo'].apply(limpar_texto)
         
+        # Atualiza a base bruta já padronizada e ordenada
+        df.drop(columns=['titulo_limpo']).to_csv(csv_raw, index=False, encoding='utf-8-sig')
+
         # Salvar dataset processado
         csv_processed = "data/processed/noticias_ods13_limpo.csv"
         df.to_csv(csv_processed, index=False, encoding='utf-8-sig')
@@ -72,6 +157,19 @@ def processar_dados():
             print(f"Dados SEEG Brasil por Estados processados salvos em: {brasil_processed}")
         except Exception as e:
             print(f"Erro ao processar dados SEEG Brasil: {e}")
+
+    # 4. Processar Dados Históricos Reais de CO2 da NOAA (Mauna Loa)
+    co2_raw = "data/raw/co2_mensal_noaa.csv"
+    if os.path.exists(co2_raw):
+        try:
+            df_co2 = pd.read_csv(co2_raw)
+            df_co2["Nível de CO2 (ppm)"] = pd.to_numeric(df_co2["Nível de CO2 (ppm)"], errors='coerce')
+            df_co2["Tendência Ajustada (ppm)"] = pd.to_numeric(df_co2["Tendência Ajustada (ppm)"], errors='coerce')
+            co2_processed = "data/processed/co2_mensal_noaa_limpo.csv"
+            df_co2.to_csv(co2_processed, index=False, encoding='utf-8-sig')
+            print(f"Dados reais de CO2 NOAA processados salvos em: {co2_processed}")
+        except Exception as e:
+            print(f"Erro ao processar dados de CO2 NOAA: {e}")
 
 if __name__ == "__main__":
     processar_dados()
