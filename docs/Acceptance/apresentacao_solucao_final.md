@@ -81,25 +81,3 @@ Para impedir **alucinações numéricas** típicas de LLMs genéricos, a aplica�
 * **Evidências do Dado:** São Paulo ocupa o 4º lugar nacional (cerca de 145 milhões de t CO₂e), com perfil de emissões concentrado em energia, transportes e processos industriais.
 * **Atuação do Agente:** O parecer orienta os executivos e comitês de ESG a priorizarem a eletrificação de frotas logísticas, eficiência energética industrial e a estruturação antecipada de inventários certificados no GHG Protocol para mitigar riscos de custos no âmbito do Sistema Brasileiro de Comércio de Emissões (SBCE).
 
----
-
-## 4. Roteiro Estruturado para Apresentação Oral da Solução (Pitch de 5 Minutos)
-
-1. **Abertura na Homepage (1 min):**
-   - Inicie na página **"🏠 Visão Geral da Solução"**:
-   - *"Boa noite, professor. Esta é a plataforma final do Projeto de Bloco. Nosso objetivo de negócio foi resolver a fragmentação dos dados socioambientais e climáticos no Brasil, criando uma esteira completa de Ciência de Dados alinhada ao ODS 13 (Ação Climática) e às práticas ESG."*
-2. **A Base Empírica de Dados (1.5 min):**
-   - Navegue por **"📈 Indicadores Globais de CO₂"**: mostre as medições mensais reais da NOAA Mauna Loa e a curva de tendência atmosférica global.
-   - Navegue por **"🇧🇷 SEEG - Emissões por Estado"**: mostre a matriz histórica de 35 anos das 27 UFs extraída dinamicamente via Selenium com `WebDriverWait`, demonstrando os gráficos comparativos entre estados e o isolamento metodológico de 'Não Alocado'.
-   - Navegue por **"📰 Panorama de Notícias & NLP"**: mostre os resumos jornalísticos extraídos e a nuvem semântica de tópicos em alta.
-   - Navegue por **"📁 Gestão de Arquivos & Dados"**: mostre a flexibilidade de upload de dados customizados e download das bases oficiais limpas.
-3. **A Cereja do Bolo: Agente Decisório ESG (2 min):**
-   - Acesse a página **"🎯 Agente Decisório ESG (ODS 13)"**:
-   - *"Agora chegamos ao ponto alto do projeto, onde dados viram inteligência de decisão."*
-   - Selecione um estado (ex: São Paulo ou Pará) e veja os cards de KPIs atualizarem em tempo real via Data Grounding (Pandas).
-   - Mostre os perfis de decisão (Gestão Pública, Governança Corporativa ESG ou Investimento de Impacto).
-   - Digite uma pergunta real no campo livre (ex: *"Como direcionar incentivos fiscais para descarbonização?"*).
-   - Clique em **"🚀 Acionar Agente e Gerar Parecer Estratégico"**: mostre o parecer completo sendo gerado com Google Gemini / Motor Especialista em segundos, destacando as 5 seções executivas e a resposta personalizada.
-   - Demonstre o download do parecer em Markdown (.md).
-4. **Fechamento e Impacto (0.5 min):**
-   - *"Com essa arquitetura, demonstramos na prática que a Ciência de Dados e a Inteligência Artificial não servem apenas para criar gráficos ou textos soltos, mas para guiar decisões de alto impacto socioambiental com precisão e responsabilidade."*
