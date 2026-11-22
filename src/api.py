@@ -14,6 +14,7 @@ from src.process_data import limpar_texto, processar_dados, padronizar_data, ord
 from src.scrape_news import extrair_noticias_ods13
 from src.scrape_seeg_brasil import extrair_seeg_brasil_estados_selenium
 from src.llm_engine import executar_processamento_texto, MODEL_ID_PADRAO
+from src.decision_agent import executar_agente_decisao, extrair_metricas_analiticas
 
 """
 API do TP3 / Etapa 4 - ODS 13 (Ação Contra a Mudança Global do Clima)
@@ -93,9 +94,9 @@ class RequisicaoProcessamentoTexto(BaseModel):
         example="resumo"
     )
     max_novos_tokens: Optional[int] = Field(
-        default=150,
+        default=1000,
         ge=20,
-        le=512,
+        le=2048,
         description="Quantidade máxima de novos tokens a serem gerados"
     )
     temperatura: Optional[float] = Field(
@@ -114,6 +115,60 @@ class RespostaProcessamentoTexto(BaseModel):
     resultado: str = Field(..., description="Texto gerado ou classificação realizada pelo modelo de linguagem")
     tempo_execucao_segundos: float = Field(..., description="Tempo de inferência gasto em segundos")
     detalhes: Optional[Dict[str, Any]] = Field(default=None, description="Metadados adicionais de geração de texto")
+
+
+# Modelos para o Agente Inteligente de Tomada de Decisão (TP5)
+class RequisicaoDecisaoAgente(BaseModel):
+    estado: str = Field(
+        ...,
+        description="Nome da Unidade Federativa a ser avaliada (ex.: 'São Paulo', 'Pará') ou 'Brasil'/'Total'",
+        example="São Paulo"
+    )
+    perfil_decisor: Optional[str] = Field(
+        default="gestao_publica",
+        description="Perfil do tomador de decisão: 'gestao_publica', 'corporativo_esg' ou 'investimento_impacto'",
+        example="gestao_publica"
+    )
+    pergunta_adicional: Optional[str] = Field(
+        default=None,
+        description="Foco prioritário ou dúvida pontual de governança para o agente responder",
+        example="Como podemos direcionar incentivos fiscais para reduzir emissões no transporte e energia?"
+    )
+    usar_modelo_llm: Optional[bool] = Field(
+        default=True,
+        description="Se True, utiliza o modelo de linguagem para redação analítica; se False, aplica o motor analítico de regras"
+    )
+    motor_ia: Optional[str] = Field(
+        default="auto",
+        description="Motor de IA: 'gemini' (Google Gemini 2.5 Flash), 'local' (Qwen local) ou 'heuristico' (regras)",
+        example="gemini"
+    )
+    api_key_gemini: Optional[str] = Field(
+        default=None,
+        description="Chave de API do Google AI Studio (opcional caso GEMINI_API_KEY esteja definida no ambiente)"
+    )
+    temperatura: Optional[float] = Field(
+        default=0.4,
+        ge=0.1,
+        le=1.0,
+        description="Temperatura de geração do modelo de linguagem"
+    )
+    max_tokens: Optional[int] = Field(
+        default=2048,
+        ge=100,
+        le=4096,
+        description="Teto máximo de tokens gerados para evitar truncamento"
+    )
+
+
+class RespostaDecisaoAgente(BaseModel):
+    status: str = Field(default="sucesso", description="Status da execução do parecer")
+    estado: str = Field(..., description="Unidade Federativa analisada")
+    perfil_decisor: str = Field(..., description="Perfil de tomada de decisão utilizado")
+    kpis_calculados: Dict[str, Any] = Field(..., description="Métricas estatísticas determinísticas de Ciência de Dados")
+    parecer_decisorio: str = Field(..., description="Parecer executivo estruturado com diagnóstico, riscos e plano de ação")
+    tempo_execucao_segundos: float = Field(..., description="Tempo total de processamento em segundos")
+    modelo_utilizado: str = Field(..., description="Identificação do motor ou LLM utilizado na análise")
 
 
 # Converte NaN em None para o JSON não quebrar na serialização
@@ -420,4 +475,85 @@ def status_modelo_llm():
         "erro_previo": engine._ERRO_INICIALIZACAO,
         "ambiente": "100% Local (Hugging Face Transformers / PyTorch)"
     }
+
+
+# ==========================================
+# ROTAS DO AGENTE INTELIGENTE ESG (TP5)
+# ==========================================
+
+@app.post(
+    "/agente/decisao",
+    response_model=RespostaDecisaoAgente,
+    tags=["Agente Inteligente ESG (Tomada de Decisão)"],
+    summary="Gera parecer executivo de tomada de decisão com IA para sustentabilidade (ODS 13)",
+    status_code=status.HTTP_200_OK
+)
+def gerar_decisao_agente(requisicao: RequisicaoDecisaoAgente):
+    """
+    Aciona o Agente Inteligente para Tomada de Decisão:
+    1. Extrai métricas analíticas reais do SEEG (1990–2024) e NOAA (CO2);
+    2. Enquadra a análise no perfil do decisor ('gestao_publica', 'corporativo_esg', 'investimento_impacto');
+    3. Produz diagnóstico situacional, matriz de riscos climáticos e plano de ação executivo para o ODS 13.
+    """
+    perfis_validos = ["gestao_publica", "corporativo_esg", "investimento_impacto"]
+    perfil = requisicao.perfil_decisor.lower() if requisicao.perfil_decisor else "gestao_publica"
+    if perfil not in perfis_validos:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Perfil '{requisicao.perfil_decisor}' inválido. Perfis disponíveis: {', '.join(perfis_validos)}."
+        )
+
+    try:
+        resultado = executar_agente_decisao(
+            estado=requisicao.estado,
+            perfil_decisor=perfil,
+            pergunta_adicional=requisicao.pergunta_adicional,
+            usar_modelo_llm=requisicao.usar_modelo_llm if requisicao.usar_modelo_llm is not None else True,
+            motor_ia=requisicao.motor_ia or "auto",
+            api_key_gemini=requisicao.api_key_gemini,
+            temperatura=requisicao.temperatura or 0.4,
+            max_tokens=requisicao.max_tokens or 2048
+        )
+
+        return RespostaDecisaoAgente(
+            status="sucesso",
+            estado=resultado["estado"],
+            perfil_decisor=resultado["perfil_decisor"],
+            kpis_calculados=resultado["kpis_calculados"],
+            parecer_decisorio=resultado["parecer_decisorio"],
+            tempo_execucao_segundos=resultado["tempo_execucao_segundos"],
+            modelo_utilizado=resultado["modelo_utilizado"]
+        )
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e)
+        )
+    except FileNotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Base de dados não encontrada: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Falha ao executar o Agente Inteligente de Decisão: {str(e)}"
+        )
+
+
+@app.get(
+    "/agente/metricas",
+    tags=["Agente Inteligente ESG (Tomada de Decisão)"],
+    summary="Consulta KPIs estatísticos calculados de um estado para tomada de decisão"
+)
+def consultar_metricas_agente(estado: str = Query("São Paulo", description="Nome da UF ou 'Total'")):
+    """Retorna as métricas quantitativas de Ciência de Dados consolidadas para apoio ao decisor."""
+    try:
+        metricas = extrair_metricas_analiticas(estado)
+        return {"status": "sucesso", "metricas": metricas}
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 

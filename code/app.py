@@ -16,6 +16,7 @@ try:
     from src.scrape_news import extrair_noticias_ods13
     from src.process_data import processar_dados, padronizar_data, ordenar_noticias_por_data
     from src.scrape_seeg_brasil import extrair_seeg_brasil_estados_selenium
+    from src.decision_agent import executar_agente_decisao, extrair_metricas_analiticas
 except ImportError:
     pass
 
@@ -120,38 +121,49 @@ def obter_dados_seeg_brasil():
 # ==========================================
 
 def pagina_inicio():
-    st.title("🌍 Painel Integrado de Ação Climática - ODS 13")
-    st.subheader("Plataforma de Monitoramento de Emissões e Análise de Dados Climáticos")
+    st.title("🌍 Plataforma Integrada de Ação Climática & Governança ESG")
+    st.subheader("Monitoramento de Emissões, Indicadores Globais e Tomada de Decisão com IA (ODS 13)")
+    st.caption("Instituto Infnet | Ciência de Dados e Inteligência Artificial | Aluno: Nelson C. de Araujo")
     
     st.markdown("""
-    Esta plataforma foi desenvolvida para apoiar a tomada de decisões socioambientais,
-    centralizando dados confiáveis sobre emissões de gases de efeito estufa e temas em alta 
-    alinhados ao **Objetivo de Desenvolvimento Sustentável 13 (Ação Contra a Mudança Global do Clima)**.
+    Esta solução foi concebida para superar a fragmentação de dados socioambientais e viabilizar **decisões práticas e fundamentadas** 
+    em sustentabilidade e governança corporativa, diretamente alinhadas ao **Objetivo de Desenvolvimento Sustentável 13 (Ação Contra a Mudança Global do Clima)**.
+    
+    Ao integrar o ciclo de vida completo da **Ciência de Dados Aplicada** — da extração automatizada de fontes oficiais à inteligência 
+    estratégica com Modelos de Linguagem (LLMs) —, o sistema transforma dados complexos em **planos de ação executivos**.
     """)
     
     st.markdown("---")
     
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.info("### 📈 Indicadores Globais\nAcompanhe a evolução temporal das concentrações atmosféricas reais de CO₂ registradas pela NOAA (Mauna Loa).")
+        st.info("### 📈 Indicadores CO₂\nSéries temporais oficiais da NOAA (Mauna Loa) com concentrações mensais e tendência global.")
     with col2:
-        st.info("### 📰 Notícias & Tendências\nExplore o panorama de matérias dos principais veículos de comunicação e os tópicos mais citados.")
+        st.info("### 🇧🇷 SEEG Emissões\nInventário histórico das 27 UFs do Brasil (1990–2024) extraído via Selenium dinâmico.")
     with col3:
-        st.success("### 🇧🇷 SEEG - Emissões Brasil\nVisão completa a nível Brasil clusterizada pelas 27 Unidades Federativas (1990–2024).")
+        st.info("### 📰 Notícias & NLP\nAcervo jornalístico socioambiental atualizado via scraping com extração profunda de resumos.")
+    with col4:
+        st.success("### 🎯 Agente Decisório\nA cereja do bolo: inteligência com LLM e Data Grounding para guiar políticas e estratégias ESG.")
 
     st.markdown("---")
     
     st.markdown(f"""
-    ### 🧭 Como Navegar pela Plataforma
-    Utilize o menu lateral para alternar entre as diferentes seções:
-    - **Visão Geral**: Apresentação da plataforma e síntese dos objetivos.
-    - **Indicadores Globais de CO₂**: Séries históricas oficiais com medições mensais e tendências de concentração (ppm).
-    - **Panorama de Notícias & NLP**: Acompanhamento jornalístico, resumos em tempo real e nuvem de tópicos.
-    - **SEEG - Emissões Brasil**: Panorama nacional consolidado para todos os Estados brasileiros.
-    - **Assistente IA & LLM**: Inteligência Artificial local (resumos, tom climático e insights) via Hugging Face Transformers.
-    - **Gestão de Arquivos & Dados**: Envio de dados, formulário de ingestão e download de relatórios.
-    
-    > 💡 **Integração Backend**: A plataforma consome dados via **API RESTful (FastAPI)** no endpoint configurado: `{API_URL}`.
+    ### 🧭 Estrutura da Apresentação & Navegação pelo Painel
+
+    A plataforma está organizada em dois blocos complementares no menu lateral:
+
+    #### 📊 1. Monitoramento e Dados (A Base Empírica)
+    1. **🏠 Visão Geral da Solução**: Ponto de partida com o panorama de negócio, metodologia e arquitetura da solução.
+    2. **📈 Indicadores Globais de CO₂**: Acompanhamento do contexto macroclimático do planeta através das medições da NOAA (ppm).
+    3. **🇧🇷 SEEG - Emissões por Estado**: Panorama desagregado das 27 Unidades Federativas do Brasil (1990–2024), com rankings de maiores emissores e gráficos temporais comparativos.
+    4. **📰 Panorama de Notícias & NLP**: Monitoramento de matérias jornalísticas socioambientais com mineração de termos e nuvem semântica de tópicos em alta.
+    5. **📁 Gestão de Arquivos & Dados**: Módulo de intercâmbio com upload de bases customizadas e download dos dados oficiais consolidados.
+
+    #### 🎯 2. Inteligência & Decisão ESG (O Ponto Alto da Aplicação)
+    * **🎯 Agente Decisório ESG (ODS 13)**: O ápice do ciclo de Ciência de Dados. Cruza os dados do SEEG, NOAA e notícias, aplica cálculos estatísticos prévios (*Data Grounding*) e aciona Inteligência Artificial para gerar diagnósticos de risco e planos de ação sob medida para gestores públicos, executivos de sustentabilidade e investidores.
+
+    ---
+    > 💡 **Integração Desacoplada**: Todo o backend opera via microsserviço **API RESTful (FastAPI)** no endpoint configurado: `{API_URL}`.
     """)
 
 
@@ -562,7 +574,7 @@ def pagina_llm():
     with st.expander("⚙️ Parâmetros Avançados de Inferência (Opcional)"):
         col_p1, col_p2 = st.columns(2)
         with col_p1:
-            tokens = st.slider("Máximo de Novos Tokens", min_value=30, max_value=300, value=150, step=10)
+            tokens = st.slider("Máximo de Novos Tokens", min_value=50, max_value=2048, value=1000, step=50, help="Defina um teto alto para que a resposta nunca seja truncada no meio.")
         with col_p2:
             temp = st.slider("Temperatura (Criatividade)", min_value=0.1, max_value=1.0, value=0.7, step=0.1)
 
@@ -603,6 +615,227 @@ def pagina_llm():
                     st.error(f"Não foi possível conectar à API em `{API_URL}`. Certifique-se de que a API FastAPI está em execução (`uvicorn src.api:app --reload`).")
                 except Exception as e:
                     st.error(f"Erro ao processar requisição: {str(e)}")
+
+
+# ==========================================
+# PÁGINA DO AGENTE INTELIGENTE ESG (TP5)
+# ==========================================
+
+def pagina_agente_decisao():
+    st.title("🎯 Agente Inteligente ESG — Tomada de Decisão (ODS 13)")
+    st.caption("Ciclo Completo de Ciência de Dados Aplicada: Coleta ➔ Engenharia ➔ IA ➔ Decisão Estratégica")
+
+    st.markdown("""
+    Este agente demonstra como a **Ciência de Dados e a Inteligência Artificial** resolvem problemas reais de negócio e sustentabilidade.
+    Ele cruza automaticamente os dados oficiais de emissões do **SEEG Brasil (1990–2024)**, medições de **CO₂ da NOAA** e notícias 
+    socioambientais coletadas via web scraping, calculando evidências estatísticas em tempo real e gerando **pareceres executivos de governança**.
+    """)
+
+    # Carrega dados do SEEG para popular a lista de estados
+    df_seeg = obter_dados_seeg_brasil()
+    if df_seeg.empty:
+        st.error("Base de dados de emissões do SEEG não localizada. Execute a sincronização dos dados.")
+        return
+
+    # Lista de estados para seleção
+    estados_disponiveis = [e for e in df_seeg["Estado"].unique() if e != "Não Alocado"]
+    if "Total" in estados_disponiveis:
+        estados_disponiveis.remove("Total")
+    estados_disponiveis = sorted(estados_disponiveis)
+    estados_disponiveis.insert(0, "Brasil (Total Consolidado)")
+
+    # Layout de controles interativos
+    col_uf, col_perfil = st.columns([1, 1])
+
+    with col_uf:
+        estado_selecionado = st.selectbox(
+            "📍 Selecione o Território / Unidade Federativa:",
+            options=estados_disponiveis,
+            index=estados_disponiveis.index("São Paulo") if "São Paulo" in estados_disponiveis else 0,
+            help="Escolha o estado brasileiro ou o total nacional para avaliação do Agente."
+        )
+
+    with col_perfil:
+        perfis_map = {
+            "🏛️ Gestão Pública & Regulação (Políticas estaduais, fiscalização, transição justa)": "gestao_publica",
+            "🏢 Governança Corporativa & ESG (Riscos regulatórios, cadeias Escopos 1-3, compliance)": "corporativo_esg",
+            "💼 Investimento de Impacto & Riscos Climáticos (Due diligence climática, finanças verdes)": "investimento_impacto"
+        }
+        perfil_label = st.selectbox(
+            "👤 Perfil do Tomador de Decisão:",
+            options=list(perfis_map.keys()),
+            help="Personaliza o tom, os riscos e as recomendações geradas pelo Agente de IA."
+        )
+        perfil_chave = perfis_map[perfil_label]
+
+    # Obter métricas analíticas em tempo real (Grounding via Pandas)
+    nome_busca = "Total" if estado_selecionado.startswith("Brasil") else estado_selecionado
+    metricas = None
+    try:
+        if "extrair_metricas_analiticas" in globals():
+            metricas = extrair_metricas_analiticas(nome_busca)
+        else:
+            # Consulta via API
+            resp_met = requests.get(f"{API_URL}/agente/metricas", params={"estado": nome_busca}, timeout=3)
+            if resp_met.status_code == 200:
+                metricas = resp_met.json().get("metricas")
+    except Exception:
+        pass
+
+    # Exibição de KPIs Quantitativos em Cards Métricos
+    if metricas:
+        st.markdown("### 📊 Evidências Estatísticas Coletadas (Data Grounding)")
+        kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+        
+        emissao_formatada = f"{metricas['emissao_2024_tco2e']:,.0f}".replace(",", ".")
+        delta_quinq = f"{metricas['variacao_quinquenal_2020_2024_pct']:+.1f}% (2020-2024)"
+        delta_color = "inverse" if metricas['variacao_quinquenal_2020_2024_pct'] > 0 else "normal"
+        
+        kpi1.metric("Emissões em 2024", f"{emissao_formatada} t CO₂e", delta=delta_quinq, delta_color=delta_color)
+        kpi2.metric("Variação 1990–2024", f"{metricas['variacao_historica_1990_2024_pct']:+.1f}%", help="Variação total acumulada na série histórica")
+        
+        ranking_txt = f"{metricas['ranking_nacional_2024']}º de 27 UFs" if metricas['ranking_nacional_2024'] else "Consolidado Nacional"
+        kpi3.metric("Ranking Nacional", ranking_txt, delta=f"{metricas['participacao_nacional_pct']:.1f}% do Brasil", delta_color="off")
+        
+        kpi4.metric("Risco Climático Preliminar", metricas['nivel_risco_climatico'], delta=f"Pico: {metricas['ano_pico_historico']}", delta_color="off")
+
+        # Gráfico dinâmico da série histórica da UF
+        anos = [c for c in df_seeg.columns if c.isdigit()]
+        anos.sort(key=int)
+        linha_uf = df_seeg[df_seeg["Estado"].str.lower() == nome_busca.lower()]
+        if not linha_uf.empty:
+            serie_grafico = linha_uf[anos].iloc[0].astype(float)
+            df_plot = pd.DataFrame({"Ano": [int(a) for a in anos], "Emissões (t CO₂e)": serie_grafico.values})
+            with st.expander("📈 Visualizar Trajetória Histórica das Emissões (1990–2024)", expanded=False):
+                st.line_chart(df_plot.set_index("Ano"))
+                st.caption(f"Curva histórica oficial de emissões brutas para {metricas['estado']} extraída da Plataforma SEEG.")
+
+    st.markdown("---")
+
+    # Área de interação e foco específico
+    st.markdown("### 💬 Interação & Foco Estratégico do Decisor")
+    pergunta_usuario = st.text_input(
+        "Foco estratégico ou pergunta específica do decisor (opcional):",
+        value="",
+        placeholder="Exemplo: Quais medidas imediatas devem ser tomadas para conter as emissões do setor de transportes neste estado?",
+        help="O Agente Inteligente analisará este questionamento e criará uma seção prioritária e dedicada no parecer final com orientações práticas."
+    )
+
+    with st.expander("⚙️ Configurações do Agente Inteligente & Motores de IA", expanded=True):
+        col_cfg1, col_cfg2 = st.columns(2)
+        with col_cfg1:
+            opcoes_motor = {
+                "⚡ Google Gemini 3.8 Flash (Recomendado — Parecer Completo, Profundo & Sem Cortes)": "gemini",
+                "🧠 Motor Analítico Especialista ESG (Instantâneo 50ms — Zero Falhas e Alta Precisão)": "heuristico",
+                "🤖 Modelo Local Hugging Face (Qwen2.5 — 100% Local na Máquina)": "local"
+            }
+            motor_label = st.radio(
+                "Motor de Inteligência do Agente:",
+                options=list(opcoes_motor.keys()),
+                index=0,
+                help="O Gemini oferece máxima profundidade executiva; o Heurístico responde instantaneamente; o Local roda na CPU/GPU."
+            )
+            motor_chave = opcoes_motor[motor_label]
+
+        with col_cfg2:
+            temp_agente = st.slider("Temperatura da IA", min_value=0.1, max_value=0.9, value=0.4, step=0.1, help="Valores menores (0.3 - 0.4) garantem rigor analítico e técnico.")
+            tokens_max_agente = st.slider("Teto Máximo de Tokens", min_value=500, max_value=3000, value=2048, step=100, help="Espaço amplo de geração para que o parecer executivo nunca seja truncado.")
+
+        chave_gemini_digitada = ""
+        if motor_chave == "gemini":
+            chave_env = os.getenv("GEMINI_API_KEY", "")
+            ajuda_chave = "Chave gratuita gerada em https://aistudio.google.com/ (começa com AIza...)"
+            if chave_env:
+                st.success("✅ Chave da API do Google Gemini detectada automaticamente via variável de ambiente!")
+                chave_gemini_digitada = chave_env
+            else:
+                chave_gemini_digitada = st.text_input(
+                    "🔑 Chave Google AI Studio (Gemini API Key):",
+                    value="",
+                    type="password",
+                    placeholder="Cole aqui sua chave (ex.: AIzaSy...) - ⚠️ Importante: Sua chave não é salva em nenhum arquivo. Ninguém, além de você, tem acesso à ela.",
+                    help=ajuda_chave
+                )
+                if not chave_gemini_digitada:
+                    st.info("💡 **Como obter em 30 segundos (Grátis):** Acesse [aistudio.google.com](https://aistudio.google.com/) ➔ Faça login com o Google ➔ Clique em *'Get API key'* ➔ *'Create API key'*. É 100% gratuito!")
+
+    # Botão de Ação Principal
+    if st.button("🚀 Acionar Agente e Gerar Parecer Estratégico", type="primary", use_container_width=True):
+        if motor_chave == "gemini" and not chave_gemini_digitada:
+            st.warning("⚠️ Para utilizar o Google Gemini, informe sua chave gratuita do Google AI Studio no campo acima ou selecione o 'Motor Analítico Especialista ESG' para resposta imediata!")
+        else:
+            with st.spinner(f"O Agente Inteligente está cruzando dados do SEEG, NOAA e notícias para formular a decisão estratégica de {estado_selecionado}..."):
+                parecer_final = ""
+                modelo_usado = ""
+                tempo_exec = 0.0
+                
+                # Tentativa 1: Via API FastAPI
+                sucesso_api = False
+                try:
+                    payload = {
+                        "estado": nome_busca,
+                        "perfil_decisor": perfil_chave,
+                        "pergunta_adicional": pergunta_usuario.strip() if pergunta_usuario else None,
+                        "usar_modelo_llm": motor_chave != "heuristico",
+                        "motor_ia": motor_chave,
+                        "api_key_gemini": chave_gemini_digitada.strip() if chave_gemini_digitada else None,
+                        "temperatura": temp_agente,
+                        "max_tokens": tokens_max_agente
+                    }
+                    resp = requests.post(f"{API_URL}/agente/decisao", json=payload, timeout=90)
+                    if resp.status_code == 200:
+                        dados = resp.json()
+                        parecer_final = dados.get("parecer_decisorio", "")
+                        modelo_usado = dados.get("modelo_utilizado", "")
+                        tempo_exec = dados.get("tempo_execucao_segundos", 0.0)
+                        sucesso_api = True
+                except Exception:
+                    sucesso_api = False
+
+                # Tentativa 2: Fallback local direto
+                if not sucesso_api:
+                    try:
+                        if "executar_agente_decisao" in globals():
+                            dados = executar_agente_decisao(
+                                estado=nome_busca,
+                                perfil_decisor=perfil_chave,
+                                pergunta_adicional=pergunta_usuario.strip() if pergunta_usuario else None,
+                                usar_modelo_llm=motor_chave != "heuristico",
+                                motor_ia=motor_chave,
+                                api_key_gemini=chave_gemini_digitada.strip() if chave_gemini_digitada else None,
+                                temperatura=temp_agente,
+                                max_tokens=tokens_max_agente
+                            )
+                            parecer_final = dados.get("parecer_decisorio", "")
+                            modelo_usado = dados.get("modelo_utilizado", "")
+                            tempo_exec = dados.get("tempo_execucao_segundos", 0.0)
+                            sucesso_api = True
+                    except Exception as ex:
+                        st.error(f"Erro ao gerar parecer com o agente: {str(ex)}")
+
+            if parecer_final:
+                st.success("Parecer Estratégico elaborado com sucesso!")
+                
+                # Exibição do Parecer
+                st.markdown(parecer_final)
+                
+                st.markdown("---")
+                
+                # Metadados de Execução e Auditoria
+                m_c1, m_c2, m_c3, m_c4 = st.columns(4)
+                m_c1.metric("Território Avaliado", estado_selecionado)
+                m_c2.metric("Perfil da Decisão", perfil_chave.replace('_', ' ').title())
+                m_c3.metric("Tempo de Síntese", f"{tempo_exec:.2f} s")
+                m_c4.metric("Origem do Processamento", "FastAPI (HTTP)" if sucesso_api else "Fallback Local")
+                
+                # Download do Parecer
+                st.download_button(
+                    label="📥 Baixar Parecer Executivo em Markdown (.md)",
+                    data=parecer_final,
+                    file_name=f"parecer_esg_ods13_{nome_busca.lower().replace(' ', '_')}.md",
+                    mime="text/markdown",
+                    use_container_width=True
+                )
 
 
 def pagina_arquivos():
@@ -665,23 +898,25 @@ def pagina_arquivos():
 
 
 # ==========================================
-# CONFIGURAÇÃO DE NAVEGAÇÃO MULTIPÁGINAS
+# CONFIGURAÇÃO DE NAVEGAÇÃO MULTIPÁGINAS (TP5)
 # ==========================================
 
 navegacao = st.navigation({
-    "Navegação Principal": [
-        st.Page(pagina_inicio, title="Visão Geral", icon="🏠", default=True),
+    "Monitoramento e Dados": [
+        st.Page(pagina_inicio, title="Visão Geral da Solução", icon="🏠", default=True),
         st.Page(pagina_indicadores, title="Indicadores Globais de CO₂", icon="📈"),
+        st.Page(pagina_seeg_brasil, title="SEEG - Emissões por Estado", icon="🇧🇷"),
         st.Page(pagina_noticias, title="Panorama de Notícias & NLP", icon="📰"),
-        st.Page(pagina_seeg_brasil, title="SEEG - Emissões Brasil", icon="🇧🇷"),
-        st.Page(pagina_llm, title="Assistente IA & LLM", icon="🤖"),
         st.Page(pagina_arquivos, title="Gestão de Arquivos & Dados", icon="📁"),
+    ],
+    "Inteligência & Decisão ESG": [
+        st.Page(pagina_agente_decisao, title="Agente Decisório ESG (ODS 13)", icon="🎯"),
     ]
 })
 
 # Rodapé no Sidebar
 st.sidebar.markdown("---")
-st.sidebar.caption(f"🌍 **Projeto de Bloco - Etapa 4**\nInstituto Infnet | Aluno: Nelson C. de Araujo\n*Backend API:* `{API_URL}`")
+st.sidebar.caption(f"🌍 **Projeto de Bloco - TP5 (Solução Final)**\nInstituto Infnet | Aluno: Nelson C. de Araujo\n*Backend API:* `{API_URL}`")
 
 # Executa a página selecionada
 navegacao.run()

@@ -1,66 +1,87 @@
-# Projeto_Bloco_Etapa4 - Monitor de Emissões & Ação Climática (ODS 13)
-
-Este repositório contém a quarta etapa de desenvolvimento (`Projeto_Bloco_Etapa4`) da plataforma integrada de monitoramento socioambiental e análise climática, desenvolvida sob os frameworks metodológicos **TDSP (Team Data Science Process)** e **CRISP-DM**, alinhada ao **ODS 13 (Ação Contra a Mudança Global do Clima)**.
+# Projeto_Bloco_TP5_Final — Monitor de Emissões, Governança ESG & Ação Climática (ODS 13)
+**Instituto Infnet | Bacharelado em Ciência de Dados e Inteligência Artificial**  
+**Aluno:** Nelson C. de Araujo  
+**Frameworks Metodológicos:** Team Data Science Process (TDSP) e CRISP-DM  
 
 ---
 
-## 🚀 Principais Entregas e Melhorias da Etapa 4
+## 🚀 Sobre a Solução Final (TP5)
 
-1. **Integração Completa via API RESTful (FastAPI + Streamlit via HTTP)**:
-   - O painel em [`code/app.py`](code/app.py) consome o backend desacoplado via requisições HTTP (`requests.get` e `requests.post`), utilizando a variável de ambiente `API_URL` (padrão: `http://127.0.0.1:8000`).
-   - Rotas consumidas no painel:
-     - `GET /emissoes`: consome as séries históricas do SEEG Brasil.
-     - `GET /noticias`: consome as matérias jornalísticas e seus resumos.
-     - `GET /co2`: consome as concentrações reais de CO₂ atmosférico da NOAA.
-     - `POST /noticias/sincronizar` e `POST /emissoes/sincronizar`: acionam a atualização de dados no backend sob demanda.
-     - `POST /noticias`: permite cadastro direto de novas notícias através de formulário interativo no painel.
-   - Resiliência integrada: mecanismo de fallback local automático caso a API esteja temporariamente offline.
+Este repositório consolida a entrega final (**TP5**) do Projeto de Bloco. A solução demonstra o **ciclo completo da Ciência de Dados Aplicada** — desde a coleta automatizada e saneamento de dados até a modelagem avançada com Inteligência Artificial e a implementação de um **Agente Inteligente de Tomada de Decisão** voltado à governança socioambiental e sustentabilidade corporativa (**ODS 13 — Ação Contra a Mudança Global do Clima**).
 
-2. **Web Scraping Dinâmico com Selenium e `WebDriverWait`**:
-   - O módulo [`src/scrape_seeg_brasil.py`](src/scrape_seeg_brasil.py) substituiu o delay estático (`time.sleep`) por espera explícita inteligente (`WebDriverWait` com `expected_conditions`), aguardando dinamicamente a renderização completa do DOM/React na Single Page Application da Plataforma SEEG antes da extração da tabela `sticky-table`.
+---
 
-3. **Extração Robusta de Resumos de Notícias**:
-   - Aprimoramento no scraper [`src/scrape_news.py`](src/scrape_news.py) com busca aprofundada na árvore do HTML e fallback para as meta tags (`meta[name="description"]` / `og:description`), eliminando o texto padrão genérico e garantindo resumos ricos e fiéis ao conteúdo original.
+## 🌟 Principais Destaques e Inovações da Solução
 
-4. **Correção Metodológica na Contagem de Estados (27 UFs)**:
-   - A contagem de "Estados Monitorados" no painel SEEG Brasil reflete com rigor as **27 Unidades Federativas** (26 estados e o Distrito Federal), separando a categoria residual *"Não Alocado"* (que abrange emissões não regionalizáveis, como offshore e aviação) com nota explicativa dedicada.
+1. **Agente Inteligente para Tomada de Decisão ESG com LLMs (`src/decision_agent.py`)**:
+   - **Data Grounding Analítico Estrito:** Todas as métricas matemáticas (taxas de crescimento, deltas quinquenais, rankings das 27 UFs e ano de pico) são calculadas previamente em Pandas, blindando a IA contra alucinações numéricas;
+   - **Arquitetura Multi-Motor de IA:**
+     - ⚡ **Google Gemini (API oficial Google AI Studio):** Integração via REST API com **auto-descoberta dinâmica de modelos textuais ativos**, com teto ampliado para **2.048 tokens**, gerando pareceres densos e sem cortes em menos de 2 segundos;
+     - 🧠 **Motor Analítico Heurístico Especialista ESG:** Resposta analítica instantânea em **50 milissegundos**, servindo como contingência de alta disponibilidade;
+     - 🤖 **Modelo Local Hugging Face:** Execução offline para cenários de privacidade estrita.
+   - **Tratamento Mandatório da Demanda do Decisor:** Campo livre para perguntas e focos prioritários, gerando obrigatoriamente a Seção 5 no parecer final com orientações práticas.
+   - Suporte a 3 perfis de decisão:
+     - 🏛️ *Gestão Pública & Regulação*;
+     - 🏢 *Governança Corporativa & ESG*;
+     - 💼 *Investimento de Impacto & Riscos Climáticos*.
 
-5. **Série Histórica Real de CO₂ (NOAA Mauna Loa)**:
-   - Substituição dos dados de demonstração pela série histórica oficial de medições mensais e curvas de tendência dessazonalizada do **Observatório de Mauna Loa (NOAA Global Monitoring Laboratory)**.
+2. **Dashboard Analítico e Fluido (Streamlit Multipage em [`code/app.py`](code/app.py))**:
+   - **Estrutura Organizada para Apresentação Acadêmica:**
+     - 📊 **Monitoramento e Dados:**
+       1. 🏠 *Visão Geral da Solução* (Página inicial com roteiro da apresentação);
+       2. 📈 *Indicadores Globais de CO₂* (Séries oficiais NOAA Mauna Loa);
+       3. 🇧🇷 *SEEG - Emissões por Estado* (Matriz histórica de 35 anos das 27 UFs);
+       4. 📰 *Panorama de Notícias & NLP* (Acervo socioambiental e nuvem de tópicos);
+       5. 📁 *Gestão de Arquivos & Dados* (Upload e download de dados);
+     - 🎯 **Inteligência & Decisão ESG:**
+       1. 🎯 *Agente Decisório ESG (ODS 13)* (A cereja do bolo da aplicação).
+   - Cards de KPIs reativos com deltas percentuais em tempo real;
+   - Gráficos dinâmicos de linha e barra comparando estados e contextualizando com a curva global da NOAA;
+   - Download de relatórios executivos em Markdown (`.md`) e bases em CSV.
 
-6. **Inteligência Artificial com Modelo LLM Local (Hugging Face)**:
-   - Módulo [`src/llm_engine.py`](src/llm_engine.py) com o modelo open-source **`Qwen/Qwen2.5-0.5B-Instruct`** executado **100% no ambiente local**, sem dependência de chaves de nuvem ou custos de API externa.
-   - Endpoint **`POST /processar_texto`** com Response Models Pydantic estruturados, validando tempo de inferência, texto gerado e metadados.
-   - Suporte a 3 tarefas: Resumo Executivo (`resumo`), Classificação de Tom e Impacto Climático (`sentimento`) e Geração de Insights (`insights`).
-   - Tratamento robusto de erros com status HTTP explícitos (`422`, `400`, `503` e `500`).
-   - Nova interface interativa no Streamlit: **🤖 Assistente IA & LLM**.
+3. **Integração Desacoplada via API RESTful (FastAPI em [`src/api.py`](src/api.py))**:
+   - Backend desacoplado servindo aos dashboards e a clientes externos;
+   - Endpoints dedicados para tomada de decisão (`POST /agente/decisao` e `GET /agente/metricas`);
+   - Documentação interativa Swagger UI em `/docs` com modelos Pydantic e controle de status HTTP.
+
+4. **Pipelines de Coleta Automatizada com Dados Reais**:
+   - **SEEG Brasil:** Scraping dinâmico via Selenium em modo headless com esperas explícitas inteligentes (`WebDriverWait`), cobrindo as 27 UFs (1990–2024);
+   - **NOAA Mauna Loa:** Série histórica oficial de concentrações atmosféricas mensais de CO₂ (ppm) e tendência ajustada;
+   - **Portais de Notícias:** Scraping via BeautifulSoup com busca estrutural profunda de resumos e metadados cronológicos.
+
+5. **Documentação TDSP Completa e Auditável**:
+   - Todos os artefatos metodológicos consolidados: [Project Charter](artifacts/project_charter.md), [Data Summary Report](artifacts/data_summary_report.md) e [Apresentação e Argumentação da Solução Final](docs/Acceptance/apresentacao_solucao_final.md).
 
 ---
 
 ## 📂 Estrutura do Repositório (Padrão TDSP)
 
 ```
-Projeto_Bloco_Etapa4/
+Projeto_Bloco_TP5_Final/
 |-- data/
-|   |-- raw/                        # Dados brutos (notícias, SEEG, série NOAA CO₂)
-|   |-- processed/                  # Dados limpos e normalizados para consumo
+|   |-- raw/                        # Dados brutos coletados (SEEG, NOAA, notícias)
+|   |-- processed/                  # Dados limpos, normalizados e tipados
 |-- docs/                           # Documentação pelas fases do ciclo TDSP
-|   |-- BusinessUnderstanding/      # Entendimento do problema e objetivos
-|   |-- DataUnderstanding/          # Mapeamento e dicionário das fontes
+|   |-- BusinessUnderstanding/      # Entendimento do problema, personas e ODS 13
+|   |-- DataUnderstanding/          # Mapeamento e auditoria das fontes
 |   |-- DataPreparation/            # Pipeline de extração, limpeza e normalização
-|   |-- Modeling/                   # NLP, agregações e preparação para LLM
-|   |-- Deployment/                 # Arquitetura de deploy (Streamlit + FastAPI)
-|   |-- Acceptance/                 # Validação com stakeholders e aceitação
-|-- src/                            # Backend, pipelines e API
+|   |-- Modeling/                   # Módulos de IA, Data Grounding e Agente Decisório
+|   |-- Deployment/                 # Arquitetura de microsserviços (FastAPI + Streamlit)
+|   |-- Acceptance/                 # Apresentação executiva, estudos de caso e roteiro de pitch
+|-- src/                            # Backend, microsserviços e algoritmos
 |   |-- api.py                      # API RESTful FastAPI (GET e POST)
-|   |-- scrape_seeg_brasil.py       # Coleta dinâmica SEEG via Selenium + WebDriverWait
-|   |-- scrape_news.py              # Coleta de notícias via BeautifulSoup + Meta description
-|   |-- process_data.py             # Pré-processamento, limpeza textual e conversões numéricas
+|   |-- decision_agent.py           # Agente Inteligente para Tomada de Decisão ESG (Multi-IA)
+|   |-- llm_engine.py               # Motor de inferência local Hugging Face
+|   |-- scrape_seeg_brasil.py       # Extração dinâmica SEEG via Selenium + WebDriverWait
+|   |-- scrape_news.py              # Extração de notícias socioambientais via BeautifulSoup
+|   |-- process_data.py             # Pré-processamento, normalização numérica e limpeza textual
 |-- code/
-|   |-- app.py                      # Painel analítico Streamlit multipage (HTTP client)
-|-- artifacts/                      # Project Charter e Data Summary Report
+|   |-- app.py                      # Painel interativo Streamlit multipage
+|-- artifacts/
+|   |-- project_charter.md          # Charter completo do projeto
+|   |-- data_summary_report.md      # Relatório de fontes de dados integradas
 |-- requirements.txt                # Dependências do projeto
-|-- README.md                       # Documentação principal
+|-- README.md                       # Documentação principal consolidada
 ```
 
 ---
@@ -68,43 +89,44 @@ Projeto_Bloco_Etapa4/
 ## 🛠️ Como Executar a Solução
 
 ### 1. Instalação das Dependências
-Em um ambiente virtual Python (3.10+):
+Em um ambiente virtual Python (3.10 ou superior):
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 2. Iniciar a API Backend (FastAPI)
-A partir da raiz do projeto, inicie o servidor da API:
+A partir da raiz do projeto:
 ```bash
 uvicorn src.api:app --reload --port 8000
 ```
 > Documentação interativa (Swagger UI): **`http://127.0.0.1:8000/docs`**
 
-#### Tabela de Endpoints da API:
+#### Tabela de Principais Endpoints da API:
 | Método | Endpoint | Descrição |
 |---|---|---|
-| `GET` | `/` | Confirmação de status da API. |
-| `GET` | `/noticias` | Consulta matérias cadastradas, com suporte a filtro `termo` e `limite`. |
-| `POST` | `/noticias` | Cadastro manual de notícia (payload JSON com `fonte`, `titulo`, `link`, `resumo`). |
-| `POST` | `/noticias/sincronizar` | Dispara o web scraping e reprocessamento de notícias. |
+| `GET` | `/` | Status e confirmação de prontidão da API. |
+| `POST` | `/agente/decisao` | **Gera parecer executivo de tomada de decisão com IA (ODS 13/ESG)** para uma UF ou Brasil total. |
+| `GET` | `/agente/metricas` | Consulta KPIs estatísticos calculados de um estado para apoio à decisão. |
 | `GET` | `/emissoes` | Consulta histórica de emissões brutas por estado (1990–2024). |
-| `POST` | `/emissoes` | Atualização/cadastro de medições estaduais. |
-| `POST` | `/emissoes/sincronizar` | Dispara extração dinâmica do SEEG via Selenium. |
+| `POST` | `/emissoes/sincronizar` | Dispara extração dinâmica do SEEG via Selenium em modo headless. |
 | `GET` | `/co2` | Consulta série histórica real de CO₂ atmosférico da NOAA (Mauna Loa). |
-| `POST` | `/processar_texto` | Executa inferência com LLM local (`Qwen2.5-0.5B-Instruct`), retornando resposta estruturada (Response Model) com resumo, tom climático ou insights. |
-| `GET` | `/llm/status` | Retorna o status de prontidão e configuração do modelo de linguagem local. |
+| `GET` | `/noticias` | Consulta matérias cadastradas, com suporte a filtros e limites. |
+| `POST` | `/noticias/sincronizar` | Dispara o web scraping e reprocessamento de notícias. |
+| `POST` | `/processar_texto` | Executa inferência com LLM para resumo, sentimento ou insights. |
+| `GET` | `/llm/status` | Retorna o status de prontidão do modelo local. |
 
 ### 3. Iniciar o Painel Front-end (Streamlit)
-Em outro terminal (com a API em execução ou configurando `API_URL`):
+Em outro terminal:
 ```bash
 streamlit run code/app.py
 ```
 Para apontar para uma API em outro host ou porta:
-```bash
-# Exemplo no Linux/Mac:
-export API_URL="http://seu-servidor:8000" && streamlit run code/app.py
-
-# Exemplo no Windows (PowerShell):
+```powershell
 $env:API_URL="http://seu-servidor:8000"; streamlit run code/app.py
 ```
 O painel estará acessível em **`http://localhost:8501`**.
+
+---
+
+## 🎓 Roteiro Sugerido para Apresentação
+Consulte o documento executivo completo em [`docs/Acceptance/apresentacao_solucao_final.md`](docs/Acceptance/apresentacao_solucao_final.md) para conferir o roteiro de pitch de 5 minutos, os estudos de caso práticos e a matriz de conformidade com todas as rubricas de avaliação.

@@ -116,7 +116,7 @@ def construir_prompt_tarefa(tipo_analise: str, texto_entrada: str) -> list:
 def executar_processamento_texto(
     texto: str,
     tipo_analise: str = "resumo",
-    max_novos_tokens: int = 150,
+    max_novos_tokens: int = 1200,
     temperatura: float = 0.7
 ) -> Dict[str, Any]:
     """

@@ -1,0 +1,322 @@
+(venv) PS C:\Users\Nelson\Projeto_Bloco_TP5_Final_ZIP> uvicorn src.api:app --reload --port 8000
+INFO:     Will watch for changes in these directories: ['C:\\Users\\Nelson\\Projeto_Bloco_TP5_Final_ZIP']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [31432] using StatReload
+INFO:     Started server process [30188]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59264 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59264 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59264 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:60247 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60247 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50497 - "GET /emissoes HTTP/1.1" 200 OK
+[LLM Engine] Carregando modelo local da Hugging Face: Qwen/Qwen2.5-0.5B-Instruct...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights: 100%|████████████████████████████| 290/290 [00:00<00:00, 501.16it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[LLM Engine] Modelo Qwen/Qwen2.5-0.5B-Instruct carregado com sucesso no dispositivo: cpu!
+[Agente Decisão] LLM local indisponível ou falhou ('NoneType' object has no attribute 'apply_chat_template'). Usando motor analítico estruturado de fallback.
+INFO:     127.0.0.1:64412 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60248 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61880 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62478 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62894 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52915 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54781 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51603 - "POST /agente/decisao HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30188]
+INFO:     Started server process [4468]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [4468]
+INFO:     Started server process [26876]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\api.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26876]
+INFO:     Started server process [15640]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\api.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [15640]
+INFO:     Started server process [33616]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\llm_engine.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [33616]
+INFO:     Started server process [8860]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'code\app.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [8860]
+INFO:     Started server process [29192]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'code\app.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [29192]
+INFO:     Started server process [32204]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [32204]
+INFO:     Started server process [34788]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:53394 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58027 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:51027 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:62998 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:63601 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:58078 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.0-flash is no longer available. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:50445 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51387 - "GET /noticias HTTP/1.1" 200 OK
+[LLM Engine] Carregando modelo local da Hugging Face: Qwen/Qwen2.5-0.5B-Instruct...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 290/290 [00:00<00:00, 810.16it/s]
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[LLM Engine] Modelo Qwen/Qwen2.5-0.5B-Instruct carregado com sucesso no dispositivo: cpu!
+INFO:     127.0.0.1:57064 - "POST /processar_texto HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57066 - "POST /processar_texto HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [34788]
+INFO:     Started server process [30468]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'code\app.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30468]
+INFO:     Started server process [25632]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [25632]
+INFO:     Started server process [32748]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [32748]
+INFO:     Started server process [30768]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+[Agente Decisão] Gemini indisponível (Falha ao consultar modelos do Google Gemini: Status 404: {
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:49812 - "POST /agente/decisao HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30768]
+INFO:     Started server process [27744]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [27744]
+INFO:     Started server process [5444]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+[Agente Decisão] Modelos Gemini suportados detectados: ['gemini-2.5-flash', 'gemini-2.5-flash-preview-tts', 'gemini-flash-latest', 'gemini-flash-lite-latest']
+[Agente Decisão] Gemini indisponível (Erro na API do Gemini (400): The requested combination of response modalities (TEXT) is not supported by the model. models/gemini-2.5-flash-preview-tts accepts the following combination of response modalities:
+* AUDIO
+). Usando motor analítico heurístico de contingência.
+INFO:     127.0.0.1:64961 - "POST /agente/decisao HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [5444]
+INFO:     Started server process [8472]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Aviso: Modelo gemini-flash-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-flash-lite-latest!
+INFO:     127.0.0.1:65479 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Aviso: Modelo gemini-flash-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemini-flash-lite-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemini-2.5-flash (Status 404): This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemini-pro-latest (Status 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3.1-pro, description: Generate content input tokens per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3.1-pro, description: Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-3.1-pro, description: Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-3.1-pro, description: Generate content input tokens per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+Please retry in 10h19m57.066667682s.. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemini-2.5-pro (Status 404): This model models/gemini-2.5-pro is no longer available to new users. Please update your code to use models/gemini-3.1-pro-preview for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemma-4-26b-a4b-it (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemma-4-31b-it (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemini-2.5-flash-lite (Status 404): This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest features and improvements. We recommend you to use the Interactions API (https://aistudio.google.com/docs/get-started).. Tentando próximo modelo...
+[Agente Decisão] Aviso: Modelo gemini-2.5-flash-image (Status 429): You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-flash-preview-image, description: Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-flash-preview-image, description: Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-flash-preview-image, description: Generate content input tokens per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+Please retry in 10h19m25.316895343s.. Tentando próximo modelo...
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-3-flash-preview!
+INFO:     127.0.0.1:50259 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Aviso: Modelo gemini-flash-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-flash-lite-latest!
+INFO:     127.0.0.1:63666 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Aviso: Modelo gemini-flash-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-flash-lite-latest!
+INFO:     127.0.0.1:57602 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Aviso: Modelo gemini-flash-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-flash-lite-latest!
+INFO:     127.0.0.1:53080 - "POST /agente/decisao HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51344 - "GET /co2 HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [8472]
+INFO:     Started server process [28264]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'src\decision_agent.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [28264]
+INFO:     Started server process [29368]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'code\app.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [29368]
+INFO:     Started server process [28544]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'code\app.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [28544]
+INFO:     Started server process [30620]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'code\app.py'. Reloading...
+ INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [30620]
+INFO:     Started server process [9336]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+Buscando conteúdos em [Agência Brasil - Clima]: https://agenciabrasil.ebc.com.br/tags/mudancas-climaticas
+Buscando conteúdos em [ONU News - Meio Ambiente]: https://news.un.org/pt/news/topic/climate-change
+Sucesso! 14 registros salvos em: data/raw/noticias_ods13.csv
+Sucesso! Conteúdo compilado salvo em: data/raw/conteudo_ods13.txt
+Dataset processado salvo em: data/processed/noticias_ods13_limpo.csv
+Texto tratado para Nuvem de Palavras salvo em: data/processed/texto_nuvem_palavras.txt
+Dados SEEG Brasil por Estados processados salvos em: data/processed/seeg_brasil_estados_limpo.csv
+Dados reais de CO2 NOAA processados salvos em: data/processed/co2_mensal_noaa_limpo.csv
+INFO:     127.0.0.1:61409 - "POST /noticias/sincronizar HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61420 - "GET /noticias HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49963 - "GET /co2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49964 - "GET /emissoes HTTP/1.1" 200 OK
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Aviso: Modelo gemini-flash-latest (Status 503): This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.. Tentando próximo modelo...
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-flash-lite-latest!
+INFO:     127.0.0.1:51336 - "POST /agente/decisao HTTP/1.1" 200 OK
+[Agente Decisão] Modelos Gemini de TEXTO suportados: ['gemini-flash-latest', 'gemini-flash-lite-latest', 'gemini-2.5-flash', 'gemini-pro-latest']
+[Agente Decisão] Erro ao tentar gemini-flash-latest: HTTPSConnectionPool(host='generativelanguage.googleapis.com', port=443): Read timed out. (read timeout=30)
+[Agente Decisão] Resposta gerada com sucesso via modelo: gemini-flash-lite-latest!
+INFO:     127.0.0.1:64619 - "POST /agente/decisao HTTP/1.1" 200 OK
