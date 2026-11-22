@@ -1,5 +1,5 @@
 # Relatório de Sumário de Dados (Data Summary Report) — TP5 (Versão Final)
-**Instituto Infnet | Bacharelado em Ciência de Dados e Inteligência Artificial**  
+**Instituto Infnet | Ciência de Dados e Inteligência Artificial**  
 **Aluno:** Nelson C. de Araujo  
 **Projeto de Bloco:** Monitor de Emissões, Governança ESG e Ação Climática (ODS 13)  
 

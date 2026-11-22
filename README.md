@@ -1,5 +1,5 @@
 # Projeto_Bloco_TP5_Final — Monitor de Emissões, Governança ESG & Ação Climática (ODS 13)
-**Instituto Infnet | Bacharelado em Ciência de Dados e Inteligência Artificial**  
+**Instituto Infnet | Ciência de Dados e Inteligência Artificial**  
 **Aluno:** Nelson C. de Araujo  
 **Frameworks Metodológicos:** Team Data Science Process (TDSP) e CRISP-DM  
 

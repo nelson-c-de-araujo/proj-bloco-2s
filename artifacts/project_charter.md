@@ -1,5 +1,5 @@
 # Project Charter — Projeto de Bloco (TP5 / Versão Final Consolidada)
-**Instituto Infnet | Bacharelado em Ciência de Dados e Inteligência Artificial**  
+**Instituto Infnet | Ciência de Dados e Inteligência Artificial**  
 **Aluno:** Nelson C. de Araujo  
 **Projeto da Agenda 2030:** ODS 13 — Ação Contra a Mudança Global do Clima & Práticas ESG  
 **Frameworks Metodológicos:** Team Data Science Process (TDSP) e CRISP-DM  
