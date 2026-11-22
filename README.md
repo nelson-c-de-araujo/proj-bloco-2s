@@ -67,7 +67,7 @@ Projeto_Bloco_TP5_Final/
 |   |-- DataPreparation/            # Pipeline de extração, limpeza e normalização
 |   |-- Modeling/                   # Módulos de IA, Data Grounding e Agente Decisório
 |   |-- Deployment/                 # Arquitetura de microsserviços (FastAPI + Streamlit)
-|   |-- Acceptance/                 # Apresentação executiva, estudos de caso e roteiro de pitch
+|   |-- Acceptance/                 # Apresentação executiva, estudos de caso.
 |-- src/                            # Backend, microsserviços e algoritmos
 |   |-- api.py                      # API RESTful FastAPI (GET e POST)
 |   |-- decision_agent.py           # Agente Inteligente para Tomada de Decisão ESG (Multi-IA)
