@@ -10,4 +10,3 @@ Esta pasta reúne os artefatos de homologação, validação com stakeholders e 
   * Demonstração de cada etapa do ciclo completo de Ciência de Dados (Coleta ➔ Limpeza ➔ Análise ➔ IA ➔ Apresentação);
   * Estudos de caso práticos (Pará, São Paulo e Total Brasil);
   * Alinhamento detalhado com as metas do ODS 13 e práticas ESG;
-  * Roteiro para apresentação oral (Pitch de 5 minutos).
