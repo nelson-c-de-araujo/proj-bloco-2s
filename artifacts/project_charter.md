@@ -45,7 +45,7 @@ A solução desenvolvida integra todo o ciclo da Ciência de Dados Aplicada para
 | **Data Preparation** | Módulo [`src/process_data.py`](../src/process_data.py) com tipagem numérica brasileira, tratamento de categorias residuais ("Não Alocado"), normalização cronológica e limpeza semântica de *stopwords* em português. |
 | **Modeling & Analytics** | Módulo [`src/decision_agent.py`](../src/decision_agent.py) integrando motor multi-IA: Google Gemini (com auto-descoberta de modelos textuais), motor analítico especialista de alta disponibilidade e modelo Hugging Face, com ChatML e Data Grounding via Pandas. |
 | **Deployment** | Backend desacoplado em FastAPI ([`src/api.py`](../src/api.py)) operando rotas `GET` e `POST` com validação Pydantic e Swagger, integrado ao painel Streamlit multipage ([`code/app.py`](../code/app.py)) com resiliência e fallback local elegante. |
-| **Customer Acceptance** | Validação prática de casos de uso (Pará, São Paulo, Total Nacional), pareceres estratégicos exportáveis em Markdown e roteiro executivo de apresentação em [`docs/Acceptance/apresentacao_solucao_final.md`](../docs/Acceptance/apresentacao_solucao_final.md). |
+| **Customer Acceptance** | Validação prática de casos de uso (Pará, São Paulo, Total Nacional), pareceres estratégicos exportáveis em Markdown [`docs/Acceptance/apresentacao_solucao_final.md`](../docs/Acceptance/apresentacao_solucao_final.md). |
 
 ---
 
@@ -86,7 +86,7 @@ Projeto_Bloco_TP5_Final/
 |   |-- DataPreparation/            # Pipeline de engenharia e limpeza de dados
 |   |-- Modeling/                   # Módulos de IA, Data Grounding e Agente Decisório
 |   |-- Deployment/                 # Arquitetura de microsserviços (FastAPI + Streamlit)
-|   |-- Acceptance/                 # Apresentação executiva, estudos de caso e roteiro de pitch
+|   |-- Acceptance/                 # Apresentação executiva, estudos de caso.
 |-- src/                            # Backend, microsserviços e algoritmos
 |   |-- api.py                      # API RESTful FastAPI (GET e POST com Swagger)
 |   |-- decision_agent.py           # Agente Inteligente para Tomada de Decisão ESG (Multi-IA)
