@@ -28,7 +28,7 @@ Este repositório consolida a entrega final (**TP5**) do Projeto de Bloco. A sol
 2. **Dashboard Analítico e Fluido (Streamlit Multipage em [`code/app.py`](code/app.py))**:
    - **Estrutura Organizada para Apresentação Acadêmica:**
      - 📊 **Monitoramento e Dados:**
-       1. 🏠 *Visão Geral da Solução* (Página inicial com roteiro da apresentação);
+       1. 🏠 *Visão Geral da Solução* (Página inicial);
        2. 📈 *Indicadores Globais de CO₂* (Séries oficiais NOAA Mauna Loa);
        3. 🇧🇷 *SEEG - Emissões por Estado* (Matriz histórica de 35 anos das 27 UFs);
        4. 📰 *Panorama de Notícias & NLP* (Acervo socioambiental e nuvem de tópicos);
