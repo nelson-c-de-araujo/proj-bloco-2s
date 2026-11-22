@@ -125,8 +125,3 @@ Para apontar para uma API em outro host ou porta:
 $env:API_URL="http://seu-servidor:8000"; streamlit run code/app.py
 ```
 O painel estará acessível em **`http://localhost:8501`**.
-
----
-
-## 🎓 Roteiro Sugerido para Apresentação
-Consulte o documento executivo completo em [`docs/Acceptance/apresentacao_solucao_final.md`](docs/Acceptance/apresentacao_solucao_final.md) para conferir o roteiro de pitch de 5 minutos, os estudos de caso práticos e a matriz de conformidade com todas as rubricas de avaliação.
